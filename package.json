@@ -1,11 +1,11 @@
 {
   "name": "promptvault",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Self-hosted prompt management system",
   "private": true,
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
   },
   "keywords": [
     "prompts",
