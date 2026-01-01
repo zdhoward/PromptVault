@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptVault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900" x-data="promptVault()">
+
+<!-- Header -->
+<header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">🧠 PromptVault</h1>
+
+            <div class="flex items-center gap-4">
+                <!-- View Toggle -->
+                <div class="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                    <button
+                            @click="viewMode = 'grid'"
+                            :class="viewMode === 'grid' ? 'bg-white dark:bg-gray-600 shadow' : ''"
+                            class="px-3 py-1 rounded text-sm font-medium transition">
+                        Grid
+                    </button>
+                    <button
+                            @click="viewMode = 'list'"
+                            :class="viewMode === 'list' ? 'bg-white dark:bg-gray-600 shadow' : ''"
+                            class="px-3 py-1 rounded text-sm font-medium transition">
+                        List
+                    </button>
+                </div>
+
+                <!-- New Prompt Button -->
+                <button
+                        @click="openEditor()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                    + New Prompt
+                </button>
+            </div>
+        </div>
+
+        <!-- Pages Bar -->
+        <div class="mt-4 flex items-center gap-2 overflow-x-auto pb-2">
+            <button
+                    @click="goAllPrompts()"
+                    :class="activePage === null ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
+                    class="px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap transition">
+                All Prompts
+            </button>
+
+            <template x-for="page in pages" :key="page.id">
+                <button
+                        @click="loadPage(page)"
+                        :class="activePage?.id === page.id
+      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
+                        class="px-2.5 py-1 rounded-lg text-sm font-medium whitespace-nowrap transition inline-flex items-center gap-1"
+                >
+                    <span x-text="page.name"></span>
+
+                    <span
+                            @click.stop="deletePage(page)"
+                            class="ml-0.5 inline-flex items-center justify-center w-4 h-4 rounded hover:bg-black/10 dark:hover:bg-white/10 text-purple-500"
+                            title="Delete page"
+                            aria-label="Delete page"
+                    >×</span>
+                </button>
+            </template>
+
+
+            <button
+                    @click="openPageEditor()"
+                    class="px-3 py-1 rounded-lg text-sm font-medium bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-500 whitespace-nowrap transition">
+                + Page
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Filters & Search -->
+<div class="max-w-7xl mx-auto px-4 py-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Search -->
+            <div class="md:col-span-2">
+                <input
+                        type="text"
+                        x-model="filters.search"
+                        @input.debounce.300ms="onSearchChanged()"
+                        placeholder="Search prompts..."
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+            </div>
+
+            <!-- Category -->
+            <div>
+                <select
+                        x-model="filters.category"
+                        @change="onCategoryChanged()"
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                    <option value="">All Categories</option>
+                    <template x-for="cat in categories" :key="cat">
+                        <option :value="cat" x-text="cat"></option>
+                    </template>
+                </select>
+            </div>
+
+            <!-- Sort -->
+            <div>
+                <select
+                        x-model="filters.sort"
+                        @change="syncFilterQueryFromFilters(); applyFilters()"
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="rating">Highest Rated</option>
+                    <option value="alpha">Alphabetical</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Filter Query (advanced) -->
+        <div class="mt-3">
+            <div class="flex items-center justify-between gap-2">
+                <label class="text-xs font-medium text-gray-600 dark:text-gray-300">Filter query</label>
+                <button
+                        @click="advancedOpen = !advancedOpen"
+                        class="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                        x-text="advancedOpen ? 'Hide JSON' : 'Show JSON'">
+                </button>
+            </div>
+
+            <input
+                    type="text"
+                    x-model="filterQuery"
+                    @input.debounce.350ms="applyFilterQuery()"
+                    placeholder="e.g. cat:Trading tag:nt8 featured title:/EMA|VWAP/i"
+                    class="mt-1 w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm">
+
+            <div x-show="advancedOpen" class="mt-2">
+                <textarea
+                        x-model="filterJson"
+                        @input.debounce.400ms="applyFilterJson()"
+                        rows="6"
+                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-xs dark:bg-gray-700 dark:text-white"
+                        spellcheck="false"></textarea>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Supported regex shape: <code>{"regex":{"title":{"pattern":"...","flags":"i"},"content":...,"tags":...}}</code>
+                </p>
+            </div>
+        </div>
+
+        <!-- Tag Filters -->
+        <div class="mt-4 flex flex-wrap gap-2" x-show="allTags.length > 0">
+            <template x-for="tag in allTags" :key="tag.id">
+                <button
+                        @click="toggleTag(tag.name)"
+                        :class="filters.tags.includes(tag.name) ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-gray-300 dark:border-gray-600'"
+                        class="px-3 py-1 rounded-full text-sm font-medium border transition"
+                        x-text="tag.name">
+                </button>
+            </template>
+        </div>
+    </div>
+</div>
+
+<!-- Prompts Grid/List -->
+<div class="max-w-7xl mx-auto px-4 pb-8">
+    <div
+            :class="viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-3'"
+            x-show="!loading && prompts.length > 0">
+        <template x-for="prompt in prompts" :key="prompt.id">
+            <div
+                    @click="copyPrompt(prompt)"
+                    class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer group relative">
+
+                <!-- Card Content -->
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-semibold text-gray-900 dark:text-white" x-text="prompt.title"></h3>
+                                <span
+                                        x-show="prompt.is_featured"
+                                        class="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 text-xs px-2 py-0.5 rounded">
+                    ⭐
+                  </span>
+                                <span
+                                        x-show="isNew(prompt)"
+                                        class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs px-2 py-0.5 rounded">
+                    New
+                  </span>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2" x-text="getPreview(prompt.content)"></p>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition ml-2" @click.stop>
+                            <button
+                                    @click="openEditor(prompt)"
+                                    class="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition"
+                                    title="Edit">
+                                ✏️
+                            </button>
+                            <button
+                                    @click="deletePrompt(prompt.id)"
+                                    class="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition"
+                                    title="Delete">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Meta -->
+                    <div class="flex items-center gap-3 mt-3 text-sm">
+              <span
+                      x-show="prompt.category"
+                      class="text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-xs"
+                      x-text="prompt.category">
+              </span>
+                        <span
+                                x-show="prompt.rating > 0"
+                                class="text-gray-600 dark:text-gray-400"
+                                x-text="'⭐'.repeat(prompt.rating)">
+              </span>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="flex flex-wrap gap-1.5 mt-3" x-show="prompt.tags.length > 0">
+                        <template x-for="tag in prompt.tags" :key="tag.id">
+                            <span class="text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 px-2 py-0.5 rounded" x-text="tag.name"></span>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- Loading -->
+    <div x-show="loading" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- Empty State -->
+    <div x-show="!loading && prompts.length === 0" class="text-center py-12">
+        <p class="text-gray-500 dark:text-gray-400 text-lg">No prompts found. Create your first prompt!</p>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div
+        x-show="toast.show"
+        x-transition
+        class="fixed bottom-4 right-4 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg"
+        x-text="toast.message">
+</div>
+
+<!-- Prompt Editor Modal -->
+<div
+        x-show="showEditor"
+        @click.self="closeEditor()"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white" x-text="editingPrompt.id ? 'Edit Prompt' : 'New Prompt'"></h2>
+                <button @click="closeEditor()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl">×</button>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Title -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
+                    <input
+                            type="text"
+                            x-model="editingPrompt.title"
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                            placeholder="Prompt title...">
+                </div>
+
+                <!-- Content -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Content (Markdown supported)</label>
+                    <textarea
+                            x-model="editingPrompt.content"
+                            rows="12"
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-sm dark:bg-gray-700 dark:text-white"
+                            placeholder="Your prompt here..."></textarea>
+                </div>
+
+                <!-- Category & Rating -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+                        <input
+                                type="text"
+                                x-model="editingPrompt.category"
+                                list="categories"
+                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                                placeholder="e.g., Trading, Coding...">
+                        <datalist id="categories">
+                            <template x-for="cat in categories" :key="cat">
+                                <option :value="cat"></option>
+                            </template>
+                        </datalist>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rating (0-5)</label>
+                        <input
+                                type="number"
+                                x-model.number="editingPrompt.rating"
+                                min="0"
+                                max="5"
+                                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tags (comma-separated)</label>
+                    <input
+                            type="text"
+                            x-model="tagsInput"
+                            @input="updateTags()"
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                            placeholder="trading, analysis, technical...">
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <template x-for="tag in editingPrompt.tags" :key="tag">
+                            <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-2 py-1 rounded text-sm" x-text="tag"></span>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Featured -->
+                <div class="flex items-center gap-2">
+                    <input
+                            type="checkbox"
+                            x-model="editingPrompt.is_featured"
+                            id="featured"
+                            class="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500">
+                    <label for="featured" class="text-sm font-medium text-gray-700 dark:text-gray-300">Mark as featured</label>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-3 pt-4">
+                    <button
+                            @click="savePrompt()"
+                            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                        Save Prompt
+                    </button>
+                    <button
+                            @click="closeEditor()"
+                            class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Page Editor Modal -->
+<div
+        x-show="showPageEditor"
+        @click.self="closePageEditor()"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+        <div class="p-6">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Create Page</h2>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Page Name</label>
+                    <input
+                            type="text"
+                            x-model="newPageName"
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                            placeholder="e.g., Trading Prompts">
+                </div>
+
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    This page will save your current filters. Switch to this page anytime to quickly apply these filters.
+                </p>
+
+                <div class="flex gap-3 pt-2">
+                    <button
+                            @click="savePage()"
+                            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                        Create Page
+                    </button>
+                    <button
+                            @click="closePageEditor()"
+                            class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function promptVault() {
+        return {
+            prompts: [],
+            categories: [],
+            allTags: [],
+            pages: [],
+            activePage: null,
+            viewMode: 'grid',
+            loading: true,
+
+            // Advanced filter UI
+            filterQuery: '',
+            filterJson: '',
+            advancedOpen: false,
+
+            filters: {
+                search: '',
+                category: '',
+                tags: [],
+                sort: 'newest',
+                // Standardized regex filters:
+                // regex: { title:{pattern,flags}, content:{pattern,flags}, tags:{pattern,flags} }
+                regex: null,
+            },
+
+            showEditor: false,
+            editingPrompt: {},
+            tagsInput: '',
+
+            showPageEditor: false,
+            newPageName: '',
+
+            toast: {
+                show: false,
+                message: '',
+            },
+
+            defaultFilters() {
+                return {
+                    search: '',
+                    category: '',
+                    tags: [],
+                    sort: 'newest',
+                    regex: null,
+                };
+            },
+
+            async init() {
+                await this.loadPrompts();
+                await this.loadCategories();
+                await this.loadTags();
+                await this.loadPages();
+                this.syncFilterQueryFromFilters();
+                this.syncFilterJsonFromFilters();
+            },
+
+            normalizeRegexFilters(raw) {
+                if (!raw || typeof raw !== 'object') return null;
+
+                const out = {};
+                for (const key of ['title', 'content', 'tags', 'category']) {
+                    if (!(key in raw)) continue;
+
+                    const v = raw[key];
+                    if (typeof v === 'string') {
+                        out[key] = { pattern: v, flags: '' };
+                        continue;
+                    }
+                    if (v && typeof v === 'object') {
+                        const pattern = typeof v.pattern === 'string' ? v.pattern : '';
+                        const flags = typeof v.flags === 'string' ? v.flags : '';
+                        out[key] = { pattern, flags };
+                        continue;
+                    }
+                }
+
+                if (!Object.keys(out).length) return null;
+                return out;
+            },
+
+            // Parse tokens like:
+            //   cat:Trading
+            //   cat:/^Trading$/i
+            //   tag:nt8 tag:nq
+            //   tag:/^(nt8|nq)$/i
+            //   title:/EMA|VWAP/i  content:/\\bATR\\b/i
+            //   q:"some words"   (applies to title+content as literal, escaped)
+            parseFilterQueryText(text) {
+                const patch = {
+                    search: '',
+                    category: '',
+                    tags: [],
+                    featured: false,
+                    minRating: undefined,
+                    maxRating: undefined,
+                    regex: null,
+                };
+
+                const tokens = (text || '').trim().match(/(?:[^\s"]+|"[^"]*")+/g) || [];
+
+                const stripQuotes = (s) => {
+                    if (!s) return s;
+                    if (s.startsWith('"') && s.endsWith('"')) return s.slice(1, -1);
+                    return s;
+                };
+
+                const escapeRegexLiteral = (s) => (s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+                const parseSlashRegex = (raw) => {
+                    // /pattern/flags
+                    if (!raw || raw[0] !== '/') return null;
+                    const lastSlash = raw.lastIndexOf('/');
+                    if (lastSlash <= 0) return null;
+                    const pattern = raw.slice(1, lastSlash);
+                    const flags = raw.slice(lastSlash + 1) || 'i';
+                    return { pattern, flags };
+                };
+
+                const rawTags = [];
+                const rawCategories = [];
+                let rawSearch = '';
+
+                const regex = {};
+
+                for (const t0 of tokens) {
+                    const t = stripQuotes(t0);
+
+                    const idx = t.indexOf(':');
+                    if (idx > 0) {
+                        const key = t.slice(0, idx).toLowerCase();
+                        const val = t.slice(idx + 1);
+
+                        if (key === 'cat' || key === 'category') {
+                            if (val === '*') {
+                                regex.category = { pattern: '.*', flags: 'i' };
+                                continue;
+                            }
+                            const rx = parseSlashRegex(val);
+                            if (rx) {
+                                regex.category = rx;
+                            } else if (val) {
+                                rawCategories.push(val);
+                            }
+                            continue;
+                        }
+
+                        if (key === 'tag' || key === 'tags') {
+                            if (val === '*') {
+                                regex.tags = { pattern: '.*', flags: 'i' };
+                                continue;
+                            }
+                            const rx = parseSlashRegex(val);
+                            if (rx) {
+                                regex.tags = rx;
+                            } else if (val) {
+                                // support comma-separated literals
+                                val.split(',').map(x => x.trim()).filter(Boolean).forEach(x => rawTags.push(x));
+                            }
+                            continue;
+                        }
+
+                        if (key === 'title' || key === 'content') {
+                            if (val === '*') {
+                                regex[key] = { pattern: '.*', flags: 'i' };
+                                continue;
+                            }
+                            const rx = parseSlashRegex(val);
+                            if (rx) {
+                                regex[key] = rx;
+                            } else if (val) {
+                                // literal -> escaped regex
+                                regex[key] = { pattern: escapeRegexLiteral(val), flags: 'i' };
+                            }
+                            continue;
+                        }
+
+                        if (key === 'q' || key === 'search') {
+                            if (val) rawSearch += (rawSearch ? ' ' : '') + val;
+                            continue;
+                        }
+
+                        if (key === 'featured') {
+                            patch.featured = (val === '' || val === 'true' || val === '1' || val === 'yes');
+                            continue;
+                        }
+
+                        if (key === 'min' || key === 'minrating') {
+                            const n = parseInt(val, 10);
+                            if (!Number.isNaN(n)) patch.minRating = n;
+                            continue;
+                        }
+
+                        if (key === 'max' || key === 'maxrating') {
+                            const n = parseInt(val, 10);
+                            if (!Number.isNaN(n)) patch.maxRating = n;
+                            continue;
+                        }
+
+                        if (key === 'rating') {
+                            const m = val.match(/^(\d+)(?:-(\d+))?$/);
+                            if (m) {
+                                patch.minRating = parseInt(m[1], 10);
+                                patch.maxRating = m[2] ? parseInt(m[2], 10) : parseInt(m[1], 10);
+                            }
+                            continue;
+                        }
+                    }
+
+                    // Bare tokens
+                    if (t.toLowerCase() === 'featured') {
+                        patch.featured = true;
+                        continue;
+                    }
+
+                    // treat unknown bare tokens as additional search terms
+                    rawSearch += (rawSearch ? ' ' : '') + t;
+                }
+
+                // If user provided literal tags/categories, compile them to regex OR-list.
+                // (If they explicitly provided tag:/.../ or cat:/.../, those win.)
+                if (!regex.tags && rawTags.length) {
+                    const uniq = Array.from(new Set(rawTags));
+                    const escaped = uniq.map(escapeRegexLiteral);
+                    regex.tags = { pattern: `^(?:${escaped.join('|')})$`, flags: 'i' };
+                    patch.tags = uniq; // keep UI state in sync
+                }
+
+                if (!regex.category && rawCategories.length) {
+                    const uniq = Array.from(new Set(rawCategories));
+                    const escaped = uniq.map(escapeRegexLiteral);
+                    // category is single in UI; if multiple are given, treat as alternation
+                    regex.category = { pattern: `^(?:${escaped.join('|')})$`, flags: 'i' };
+                    patch.category = uniq.length === 1 ? uniq[0] : '';
+                }
+
+                // Search applies to both title/content as escaped literal unless title/content already set explicitly.
+                if (rawSearch) {
+                    const escaped = escapeRegexLiteral(rawSearch);
+                    if (!regex.title) regex.title = { pattern: escaped, flags: 'i' };
+                    if (!regex.content) regex.content = { pattern: escaped, flags: 'i' };
+                    patch.search = rawSearch;
+                }
+
+                patch.regex = this.normalizeRegexFilters(regex);
+                return patch;
+            },
+
+            buildFilterQueryText() {
+                const escapeRegexLiteral = (s) => (s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+                const rx = this.normalizeRegexFilters(this.filters.regex) || {};
+                const parts = [];
+
+                // Category: prefer explicit regex.category, else compile exact-match regex from dropdown value
+                if (rx.category?.pattern) {
+                    parts.push(`cat:/${rx.category.pattern}/${rx.category.flags || ''}`);
+                } else if (this.filters.category) {
+                    const pat = `^(?:${escapeRegexLiteral(this.filters.category)})$`;
+                    parts.push(`cat:/${pat}/i`);
+                }
+
+                // Tags: prefer explicit regex.tags, else compile OR regex from selected tags
+                if (rx.tags?.pattern) {
+                    parts.push(`tag:/${rx.tags.pattern}/${rx.tags.flags || ''}`);
+                } else if (Array.isArray(this.filters.tags) && this.filters.tags.length) {
+                    const uniq = Array.from(new Set(this.filters.tags));
+                    const pat = `^(?:${uniq.map(escapeRegexLiteral).join('|')})$`;
+                    parts.push(`tag:/${pat}/i`);
+                }
+
+                // Search: prefer explicit title/content regex, else compile escaped literal into both
+                if (rx.title?.pattern) {
+                    parts.push(`title:/${rx.title.pattern}/${rx.title.flags || ''}`);
+                } else if (this.filters.search) {
+                    parts.push(`title:/${escapeRegexLiteral(this.filters.search)}/i`);
+                }
+
+                if (rx.content?.pattern) {
+                    parts.push(`content:/${rx.content.pattern}/${rx.content.flags || ''}`);
+                } else if (this.filters.search) {
+                    parts.push(`content:/${escapeRegexLiteral(this.filters.search)}/i`);
+                }
+
+                if (this.filters.featured) parts.push('featured');
+                if (this.filters.minRating !== undefined && this.filters.minRating !== null && this.filters.minRating !== '') {
+                    parts.push(`min:${this.filters.minRating}`);
+                }
+                if (this.filters.maxRating !== undefined && this.filters.maxRating !== null && this.filters.maxRating !== '') {
+                    parts.push(`max:${this.filters.maxRating}`);
+                }
+
+                return parts.join(' ');
+            },
+
+            syncFilterQueryFromFilters() {
+                this.filterQuery = this.buildFilterQueryText();
+            },
+
+
+            syncFilterJsonFromFilters() {
+                // Keep it stable for diffing / pages.
+                const stable = {
+                    search: this.filters.search || '',
+                    category: this.filters.category || '',
+                    tags: Array.isArray(this.filters.tags) ? this.filters.tags : [],
+                    sort: this.filters.sort || 'newest',
+                    featured: !!this.filters.featured,
+                    minRating: this.filters.minRating,
+                    maxRating: this.filters.maxRating,
+                    regex: this.normalizeRegexFilters(this.filters.regex),
+                };
+                this.filterJson = JSON.stringify(stable, null, 2);
+            },
+
+            applyFilterQuery() {
+                try {
+                    const patch = this.parseFilterQueryText(this.filterQuery);
+
+                    // Apply onto current sort (don't override), but do update everything else
+                    this.filters.search = patch.search ?? '';
+                    this.filters.category = patch.category ?? '';
+                    this.filters.tags = Array.isArray(patch.tags) ? patch.tags : [];
+                    this.filters.featured = !!patch.featured;
+                    this.filters.minRating = patch.minRating;
+                    this.filters.maxRating = patch.maxRating;
+                    this.filters.regex = patch.regex || null;
+
+                    this.activePage = null; // user is now free-handing filters
+                    this.syncFilterJsonFromFilters();
+                    this.applyFilters();
+                } catch (e) {
+                    this.showToast('Invalid filter query');
+                }
+            },
+
+            applyFilterJson() {
+                // Let users paste/edit the canonical filter JSON.
+                try {
+                    const obj = JSON.parse(this.filterJson || '{}');
+                    this.filters.search = obj.search || '';
+                    this.filters.category = obj.category || '';
+                    this.filters.tags = Array.isArray(obj.tags) ? obj.tags : [];
+                    this.filters.sort = obj.sort || this.filters.sort || 'newest';
+                    this.filters.featured = !!obj.featured;
+                    this.filters.minRating = obj.minRating;
+                    this.filters.maxRating = obj.maxRating;
+                    this.filters.regex = this.normalizeRegexFilters(obj.regex);
+
+                    this.activePage = null;
+                    this.filterQuery = this.buildFilterQueryText();
+                    this.applyFilters();
+                } catch {
+                    this.showToast('Invalid JSON');
+                }
+            },
+
+            resetFilters() {
+                this.filters = this.defaultFilters();
+                this.syncFilterQueryFromFilters();
+                this.syncFilterJsonFromFilters();
+            },
+
+            goAllPrompts() {
+                this.activePage = null;
+                this.resetFilters();
+                this.applyFilters();
+            },
+
+            async loadPrompts() {
+                this.loading = true;
+                try {
+                    const params = new URLSearchParams();
+
+                    const rx = this.normalizeRegexFilters(this.filters.regex);
+
+                    // When regex is present for a field, don't also send the non-regex filter
+                    // (keeps behavior predictable and avoids unintended double-filtering).
+                    if (!(rx && (rx.title || rx.content)) && this.filters.search) {
+                        params.append('search', this.filters.search);
+                    }
+                    if (!(rx && rx.category) && this.filters.category) {
+                        params.append('category', this.filters.category);
+                    }
+                    if (!(rx && rx.tags) && Array.isArray(this.filters.tags) && this.filters.tags.length) {
+                        params.append('tags', this.filters.tags.join(','));
+                    }
+
+                    params.append('sort', this.filters.sort);
+
+                    if (this.filters.featured) params.append('featured', 'true');
+                    if (this.filters.minRating !== undefined && this.filters.minRating !== null && this.filters.minRating !== '') {
+                        params.append('minRating', String(this.filters.minRating));
+                    }
+                    if (this.filters.maxRating !== undefined && this.filters.maxRating !== null && this.filters.maxRating !== '') {
+                        params.append('maxRating', String(this.filters.maxRating));
+                    }
+
+                    if (rx) params.append('regex', JSON.stringify(rx));
+
+                    const res = await fetch(`/api/prompts?${params}`);
+                    const data = await res.json();
+                    this.prompts = data.prompts || [];
+                } catch (err) {
+                    this.showToast('Failed to load prompts');
+                }
+                this.loading = false;
+            },
+
+
+            async loadCategories() {
+                const res = await fetch('/api/categories');
+                const data = await res.json();
+                this.categories = data.categories;
+            },
+
+            async loadTags() {
+                const res = await fetch('/api/tags');
+                const data = await res.json();
+                this.allTags = data.tags;
+            },
+
+            async loadPages() {
+                const res = await fetch('/api/pages');
+                const data = await res.json();
+                const pages = data.pages || [];
+
+                // Make sorting deterministic in UI (server already orders by name)
+                this.pages = pages.sort((a, b) => (a.name || '').localeCompare(b.name || '', undefined, { sensitivity: 'base' }));
+            },
+
+            applyFilters() {
+                this.loadPrompts();
+            },
+
+            _escapeRegexLiteral(s) {
+                return (s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            },
+
+            _setRegexField(field, pattern, flags = 'i') {
+                const base = this.filters.regex && typeof this.filters.regex === 'object' ? { ...this.filters.regex } : {};
+                if (!pattern) {
+                    delete base[field];
+                } else {
+                    base[field] = { pattern, flags };
+                }
+                this.filters.regex = this.normalizeRegexFilters(base);
+            },
+
+            _rebuildTagRegexFromSelection() {
+                const tags = Array.isArray(this.filters.tags) ? this.filters.tags : [];
+                if (!tags.length) {
+                    this._setRegexField('tags', null);
+                    return;
+                }
+                const uniq = Array.from(new Set(tags));
+                const pat = `^(?:${uniq.map(this._escapeRegexLiteral).join('|')})$`;
+                this._setRegexField('tags', pat, 'i');
+            },
+
+            onSearchChanged() {
+                const s = (this.filters.search || '').trim();
+                if (!s) {
+                    this._setRegexField('title', null);
+                    this._setRegexField('content', null);
+                } else {
+                    const pat = this._escapeRegexLiteral(s);
+                    this._setRegexField('title', pat, 'i');
+                    this._setRegexField('content', pat, 'i');
+                }
+                this.activePage = null;
+                this.syncFilterQueryFromFilters();
+                this.syncFilterJsonFromFilters();
+                this.applyFilters();
+            },
+
+            onCategoryChanged() {
+                const c = (this.filters.category || '').trim();
+                if (!c) {
+                    this._setRegexField('category', null);
+                } else {
+                    const pat = `^(?:${this._escapeRegexLiteral(c)})$`;
+                    this._setRegexField('category', pat, 'i');
+                }
+                this.activePage = null;
+                this.syncFilterQueryFromFilters();
+                this.syncFilterJsonFromFilters();
+                this.applyFilters();
+            },
+
+            toggleTag(tagName) {
+                const tags = Array.isArray(this.filters.tags) ? [...this.filters.tags] : [];
+                const idx = tags.indexOf(tagName);
+                if (idx >= 0) tags.splice(idx, 1);
+                else tags.push(tagName);
+
+                this.filters.tags = tags;
+                this._rebuildTagRegexFromSelection();
+
+                this.activePage = null;
+                this.syncFilterQueryFromFilters();
+                this.syncFilterJsonFromFilters();
+                this.applyFilters();
+            },
+
+
+            async copyPrompt(prompt) {
+                try {
+                    await navigator.clipboard.writeText(prompt.content);
+                    this.showToast('✓ Copied to clipboard');
+                } catch (err) {
+                    this.showToast('Failed to copy');
+                }
+            },
+
+            openEditor(prompt = null) {
+                if (prompt) {
+                    this.editingPrompt = {
+                        ...prompt,
+                        tags: (prompt.tags || []).map(t => t.name)
+                    };
+                    this.tagsInput = (prompt.tags || []).map(t => t.name).join(', ');
+                } else {
+                    this.editingPrompt = {
+                        title: '',
+                        content: '',
+                        category: '',
+                        rating: 0,
+                        is_featured: false,
+                        tags: []
+                    };
+                    this.tagsInput = '';
+                }
+                this.showEditor = true;
+            },
+
+            closeEditor() {
+                this.showEditor = false;
+                this.editingPrompt = {};
+                this.tagsInput = '';
+            },
+
+            updateTags() {
+                this.editingPrompt.tags = this.tagsInput
+                    .split(',')
+                    .map(t => t.trim())
+                    .filter(Boolean);
+            },
+
+            async savePrompt() {
+                if (!this.editingPrompt.title || !this.editingPrompt.content) {
+                    this.showToast('Title and content required');
+                    return;
+                }
+
+                const method = this.editingPrompt.id ? 'PUT' : 'POST';
+                const url = this.editingPrompt.id
+                    ? `/api/prompts/${this.editingPrompt.id}`
+                    : '/api/prompts';
+
+                try {
+                    await fetch(url, {
+                        method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(this.editingPrompt),
+                    });
+
+                    this.closeEditor();
+                    await this.loadPrompts();
+                    await this.loadCategories();
+                    await this.loadTags();
+                    this.showToast('✓ Prompt saved');
+                } catch (err) {
+                    this.showToast('Failed to save prompt');
+                }
+            },
+
+            async deletePrompt(id) {
+                if (!confirm('Delete this prompt?')) return;
+
+                try {
+                    await fetch(`/api/prompts/${id}`, { method: 'DELETE' });
+                    await this.loadPrompts();
+                    this.showToast('✓ Prompt deleted');
+                } catch (err) {
+                    this.showToast('Failed to delete prompt');
+                }
+            },
+
+            openPageEditor() {
+                this.newPageName = '';
+                this.showPageEditor = true;
+            },
+
+            closePageEditor() {
+                this.showPageEditor = false;
+                this.newPageName = '';
+            },
+
+            async savePage() {
+                if (!this.newPageName) {
+                    this.showToast('Page name required');
+                    return;
+                }
+
+                try {
+                    await fetch('/api/pages', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: this.newPageName,
+                            filters: this.filters,
+                        }),
+                    });
+
+                    this.closePageEditor();
+                    await this.loadPages();
+                    this.showToast('✓ Page created');
+                } catch (err) {
+                    this.showToast('Failed to create page');
+                }
+            },
+
+            async deletePage(page) {
+                if (!page || !page.id) return;
+                if (!confirm(`Delete page "${page.name}"?`)) return;
+
+                try {
+                    await fetch(`/api/pages/${page.id}`, { method: 'DELETE' });
+                    await this.loadPages();
+
+                    // If we deleted the active page, go back to All Prompts and reset.
+                    if (this.activePage?.id === page.id) {
+                        this.goAllPrompts();
+                    }
+
+                    this.showToast('✓ Page deleted');
+                } catch (err) {
+                    this.showToast('Failed to delete page');
+                }
+            },
+
+            loadPage(page) {
+                this.activePage = page;
+
+                // Page filters are authoritative + standardized
+                const f = page.filters || {};
+                this.filters = {
+                    ...this.defaultFilters(),
+                    ...f,
+                    tags: Array.isArray(f.tags) ? f.tags : [],
+                    regex: this.normalizeRegexFilters(f.regex),
+                };
+
+                this.filterQuery = this.buildFilterQueryText();
+                this.syncFilterJsonFromFilters();
+                this.applyFilters();
+            },
+
+            getPreview(content) {
+                return content.substring(0, 120) + (content.length > 120 ? '...' : '');
+            },
+
+            isNew(prompt) {
+                const created = new Date(prompt.created_at);
+                const daysSince = (Date.now() - created) / (1000 * 60 * 60 * 24);
+                return daysSince < 7;
+            },
+
+            showToast(message) {
+                this.toast.message = message;
+                this.toast.show = true;
+                setTimeout(() => { this.toast.show = false; }, 2000);
+            },
+        };
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "promptvault",
+  "version": "1.0.0",
+  "description": "Self-hosted prompt management system",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "prompts",
+    "ai",
+    "self-hosted",
+    "sqlite"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^9.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
