@@ -1,7 +1,10 @@
+@import "./_base.css";
 /* ===============================
    Blue-Lime — Light
    =============================== */
 html.theme-blue-lime {
+    --pv-logo-filter: invert(1);
+
     --pv-bg: #f7fee7;
     --pv-header-bg: #d9f99d;
     --pv-card-bg: #ecfccb;
@@ -26,4 +29,7 @@ html.theme-blue-lime {
     --pv-attention: #ea580c;
 
     --pv-overlay: rgba(0,0,0,0.4);
+
+    --pv-shadow-color: 34 197 94;   /* green-tinted shadow */
+    --pv-shadow-opacity: 0.35;
 }

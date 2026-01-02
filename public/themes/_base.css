@@ -1,26 +1,41 @@
-/* ============================================================
-   PromptVault Theme Contract
-   DO NOT put colors directly in components.
-   Only variables live here.
-   ============================================================ */
-
 :root {
-    --pv-bg: theme(light);
-    --pv-surface: theme(light);
-    --pv-surface-2: theme(light);
-    --pv-border: theme(light);
-    --pv-text: theme(light);
-    --pv-muted: theme(light);
-    --pv-accent: theme(light);
-}
+    /* ===============================
+       Elevation / Shadows (THE KEY)
+       =============================== */
 
-/* Dark override */
-html.dark {
-    --pv-bg: theme(dark);
-    --pv-surface: theme(dark);
-    --pv-surface-2: theme(dark);
-    --pv-border: theme(dark);
-    --pv-text: theme(dark);
-    --pv-muted: theme(dark);
-    --pv-accent: theme(dark);
+    .pv-shadow-sm {
+        box-shadow: var(--pv-shadow-sm);
+    }
+
+    .pv-shadow-md {
+        box-shadow: var(--pv-shadow-md);
+    }
+
+    .pv-shadow-xl {
+        box-shadow: var(--pv-shadow-xl);
+    }
+
+    .pv-shadow-inset {
+        box-shadow: var(--pv-shadow-inset);
+    }
+
+    .pv-shadow-tray {
+        box-shadow: var(--pv-shadow-tray);
+    }
+
+
+
+    /* ===============================
+       Surface separation helpers
+       =============================== */
+
+    --pv-surface-gap: 1px;
+    --pv-surface-border-opacity: 0.08;
+
+
+    /* ===============================
+       Logo handling
+       =============================== */
+
+    --pv-logo-filter: none;
 }

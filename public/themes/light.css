@@ -2,6 +2,8 @@
    Light  — Tailwind parity
    =============================== */
 html.theme-light {
+    --pv-logo-filter: invert(1);
+
     /* Surfaces */
     --pv-bg: #f9fafb;              /* gray-50 */
     --pv-bg-tertiary: #f3f4f6;     /* gray-100 */

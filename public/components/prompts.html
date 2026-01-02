@@ -1,0 +1,105 @@
+<div class="max-w-7xl mx-auto px-4 pb-8 pt-6 shadow-[0px_-5px_15px_-3px_rgba(0,_0,_0,_0.2)]">
+    <div
+            :class="viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-3'"
+            x-show="!loading && prompts.length > 0"
+    >
+        <template x-for="prompt in prompts" :key="prompt.id">
+            <div
+                    @click="copyPrompt(prompt)"
+                    class="bg-[var(--pv-card-bg)] rounded-lg shadow-sm border border-[var(--pv-border)] hover:shadow-md transition cursor-pointer group relative"
+            >
+                <!-- Card Content -->
+                <div class="p-4">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-semibold text-[var(--pv-title)]" x-text="prompt.title"></h3>
+
+                                <span
+                                        x-show="prompt.is_featured"
+                                        class="text-xs px-2 py-0.5 rounded
+                                                   bg-[var(--pv-warning)]/20 text-[var(--pv-text)] border border-[var(--pv-border)]"
+                                >⭐</span>
+
+                                <span
+                                        x-show="isNew(prompt)"
+                                        class="text-xs px-2 py-0.5 rounded
+                                                   bg-[var(--pv-success)]/20 text-[var(--pv-text)] border border-[var(--pv-border)]"
+                                >New</span>
+                            </div>
+
+                            <p class="text-sm text-[var(--pv-muted-text)] line-clamp-2" x-text="getPreview(prompt.content)"></p>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition ml-2" @click.stop>
+                            <button
+                                    @click="openEditor(prompt)"
+                                    class="p-1.5 hover:bg-[var(--pv-hover)] rounded transition"
+                                    title="Edit"
+                                    aria-label="Edit"
+                            >
+                                <!-- Heroicon: pencil-square -->
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                     class="w-5 h-5 text-[var(--pv-text)]" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M16.862 4.487 19.5 7.125m-2.638-2.638L7.5 13.85V16.5h2.65l9.362-9.375Zm0 0 1.576-1.576a1.875 1.875 0 1 1 2.652 2.652L19.5 7.125" />
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M19.5 12.75V19.5A2.25 2.25 0 0 1 17.25 21.75H4.5A2.25 2.25 0 0 1 2.25 19.5V6.75A2.25 2.25 0 0 1 4.5 4.5h6.75" />
+                                </svg>
+                            </button>
+
+                            <button
+                                    @click="deletePrompt(prompt.id)"
+                                    class="p-1.5 hover:bg-[var(--pv-error)]/20 rounded transition"
+                                    title="Delete"
+                                    aria-label="Delete"
+                            >
+                                <!-- Heroicon: trash -->
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                     class="w-5 h-5 text-[var(--pv-text)]" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0V4.875c0-1.125-.844-2.07-1.97-2.158a51.966 51.966 0 0 0-3.32 0c-1.126.088-1.97 1.033-1.97 2.158V5.79m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Meta -->
+                    <div class="flex items-center gap-3 mt-3 text-sm">
+                            <span
+                                    x-show="prompt.category"
+                                    class="text-[var(--pv-muted-text)] bg-[var(--pv-bg-tertiary)] px-2 py-0.5 rounded text-xs border border-[var(--pv-border)]"
+                                    x-text="prompt.category"
+                            ></span>
+                        <span
+                                x-show="prompt.rating > 0"
+                                class="text-[var(--pv-muted-text)]"
+                                x-text="'⭐'.repeat(prompt.rating)"
+                        ></span>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="flex flex-wrap gap-1.5 mt-3" x-show="prompt.tags.length > 0">
+                        <template x-for="tag in prompt.tags" :key="tag.id">
+                                <span
+                                        class="text-xs bg-[var(--pv-bg-tertiary)] text-[var(--pv-accent)] px-2 py-0.5 rounded border border-[var(--pv-border)]"
+                                        x-text="tag.name"
+                                ></span>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- Loading -->
+    <div x-show="loading" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--pv-primary)]"></div>
+    </div>
+
+    <!-- Empty State -->
+    <div x-show="!loading && prompts.length === 0" class="text-center py-12">
+        <p class="text-[var(--pv-muted-text)] text-lg">No prompts found. Create your first prompt!</p>
+    </div>
+</div>

@@ -2,12 +2,14 @@
    Dark — Tailwind parity (DEFAULT)
    =============================== */
 html.theme-dark {
+    --pv-logo-filter: none;
+
     /* Surfaces */
-    --pv-bg: #020617;                  /* slate-950 */
-    --pv-bg-secondary: #020617;
-    --pv-bg-tertiary: #020617;
-    --pv-card-bg: #020617;             /* baseline */
-    --pv-header-bg: #020617;
+    --pv-bg: #ff0000;                  /* slate-950 */
+    --pv-bg-secondary: #0ff000;
+    --pv-bg-tertiary: #00ff00;
+    --pv-card-bg: #000ff0;             /* baseline */
+    --pv-header-bg: #00000f;
 
     /* Text */
     --pv-text: #e5e7eb;                /* gray-200 */

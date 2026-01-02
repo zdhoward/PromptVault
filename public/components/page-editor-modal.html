@@ -1,0 +1,46 @@
+<div
+        x-show="showPageEditor"
+        x-cloak
+        @click.self="closePageEditor()"
+        class="fixed inset-0 bg-[var(--pv-overlay)] flex items-center justify-center z-50 p-4"
+>
+    <div class="bg-[var(--pv-card-bg)] rounded-lg shadow-xl max-w-md w-full border border-[var(--pv-border)]">
+        <div class="p-6">
+            <h2 class="text-xl font-bold text-[var(--pv-title)] mb-4">Create Page</h2>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-[var(--pv-muted-text)] mb-1">Page Name</label>
+                    <input
+                            type="text"
+                            x-model="newPageName"
+                            class="w-full px-4 py-2 border border-[var(--pv-border)] rounded-lg
+                                       bg-[var(--pv-bg-tertiary)] text-[var(--pv-text)]
+                                       placeholder:text-[var(--pv-muted-text)]
+                                       focus:ring-2 focus:ring-[var(--pv-primary)] focus:outline-none"
+                            placeholder="e.g., Trading Prompts"
+                    >
+                </div>
+
+                <p class="text-sm text-[var(--pv-muted-text)]">
+                    This page will save your current filters. Switch to this page anytime to quickly apply these filters.
+                </p>
+
+                <div class="flex gap-3 pt-2">
+                    <button
+                            @click="savePage()"
+                            class="flex-1 bg-[var(--pv-primary)] hover:opacity-90 text-white px-4 py-2 rounded-lg font-medium transition"
+                    >
+                        Create Page
+                    </button>
+                    <button
+                            @click="closePageEditor()"
+                            class="px-4 py-2 border border-[var(--pv-border)] rounded-lg bg-[var(--pv-bg-tertiary)] hover:bg-[var(--pv-hover)] transition"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

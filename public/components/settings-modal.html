@@ -1,0 +1,60 @@
+<div
+        x-show="showSettings"
+        x-cloak
+        @click.self="closeSettings()"
+        class="fixed inset-0 bg-[var(--pv-overlay)] flex items-center justify-center z-50 p-4"
+>
+    <div class="bg-[var(--pv-card-bg)] rounded-lg shadow-xl max-w-md w-full border border-[var(--pv-border)]">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-[var(--pv-title)]">Settings</h2>
+                <button
+                        @click="closeSettings()"
+                        class="text-[var(--pv-muted-text)] hover:text-[var(--pv-text)] transition"
+                        aria-label="Close settings"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                         class="w-6 h-6" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-[var(--pv-muted-text)] mb-1">
+                    Theme
+                </label>
+
+                <select
+                        x-model="themePalette"
+                        @change="applyPalette(themePalette)"
+                        class="w-full px-4 py-2 border border-[var(--pv-border)] rounded-lg
+                                   bg-[var(--pv-bg-tertiary)] text-[var(--pv-text)]
+                                   focus:ring-2 focus:ring-[var(--pv-primary)] focus:outline-none"
+                >
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                    <option value="blue-lime">Blue Lime</option>
+                    <option value="vintage">Vintage</option>
+                    <option value="angsty-robot">Angsty Robot</option>
+                    <option value="high-contrast">High Contrast</option>
+                    <option value="nord-slate">Nord Slate</option>
+                    <option value="mono-ink">Mono Ink</option>
+                </select>
+
+                <p class="mt-2 text-xs text-[var(--pv-muted-text)]">
+                    Theme changes apply instantly and persist locally.
+                </p>
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button
+                        @click="closeSettings()"
+                        class="px-4 py-2 border border-[var(--pv-border)] rounded-lg bg-[var(--pv-bg-tertiary)] hover:bg-[var(--pv-hover)] transition"
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

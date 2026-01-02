@@ -1,0 +1,100 @@
+<header class="bg-[var(--pv-header-bg)] border-b border-[var(--pv-border)] sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 h-10">
+                <img
+                        src="/assets/pv_logo_white.png"
+                        alt="PromptVault"
+                        class="h-full w-auto object-contain pv-logo"
+                />
+                <h1 class="text-2xl font-bold text-[var(--pv-title)]">PromptVault</h1>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <!-- View Toggle -->
+                <div class="flex gap-1 bg-[var(--pv-bg-tertiary)] rounded-lg p-1 border border-[var(--pv-border)]">
+                    <button
+                            @click="viewMode = 'grid'"
+                            :class="viewMode === 'grid'
+                                ? 'bg-[var(--pv-card-bg)] shadow'
+                                : 'hover:bg-[var(--pv-hover)]'"
+                            class="px-3 py-1 rounded text-sm font-medium transition"
+                    >
+                        Grid
+                    </button>
+                    <button
+                            @click="viewMode = 'list'"
+                            :class="viewMode === 'list'
+                                ? 'bg-[var(--pv-card-bg)] shadow'
+                                : 'hover:bg-[var(--pv-hover)]'"
+                            class="px-3 py-1 rounded text-sm font-medium transition"
+                    >
+                        List
+                    </button>
+                </div>
+
+                <!-- New Prompt -->
+                <button
+                        @click="openEditor()"
+                        class="bg-[var(--pv-primary)] hover:opacity-90 text-white px-4 py-2 rounded-lg font-medium transition"
+                >
+                    + New Prompt
+                </button>
+            </div>
+        </div>
+
+        <!-- Pages Bar -->
+        <div class="mt-4 flex items-center gap-2">
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 flex-1 min-w-0">
+                <button
+                        @click="goAllPrompts()"
+                        :class="activePage === null
+                            ? 'bg-[var(--pv-selected)] text-[var(--pv-text)] border-[var(--pv-border)]'
+                            : 'bg-[var(--pv-bg-tertiary)] text-[var(--pv-muted-text)] border-[var(--pv-border)] hover:bg-[var(--pv-hover)]'"
+                        class="px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap transition border"
+                >
+                    All Prompts
+                </button>
+
+                <template x-for="page in pages" :key="page.id">
+                    <button
+                            @click="loadPage(page)"
+                            :class="activePage?.id === page.id
+                                ? 'bg-[var(--pv-selected)] text-[var(--pv-text)] border-[var(--pv-border)]'
+                                : 'bg-[var(--pv-bg-tertiary)] text-[var(--pv-muted-text)] border-[var(--pv-border)] hover:bg-[var(--pv-hover)]'"
+                            class="px-2.5 py-1 rounded-lg text-sm font-medium whitespace-nowrap transition inline-flex items-center gap-1 border"
+                    >
+                        <span x-text="page.name"></span>
+                        <span
+                                @click.stop="deletePage(page)"
+                                class="ml-0.5 inline-flex items-center justify-center w-4 h-4 rounded hover:bg-[var(--pv-hover)] text-[var(--pv-accent)]"
+                                title="Delete page"
+                        >×</span>
+                    </button>
+                </template>
+
+                <button
+                        @click="openPageEditor()"
+                        class="px-3 py-1 rounded-lg text-sm font-medium bg-[var(--pv-bg-tertiary)] text-[var(--pv-muted-text)] hover:bg-[var(--pv-hover)] whitespace-nowrap transition border border-[var(--pv-border)]"
+                >
+                    + Page
+                </button>
+            </div>
+
+            <!-- Settings -->
+            <button
+                    @click="openSettings()"
+                    class="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[var(--pv-border)] bg-[var(--pv-card-bg)] hover:bg-[var(--pv-hover)] transition"
+                    title="Settings"
+            >
+                <!-- icon unchanged -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                     stroke-width="1.5" stroke="currentColor"
+                     class="w-5 h-5 text-[var(--pv-text)]">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M10.5 6h3m-1.5 12h.008v.008H12V18Zm8.25-6a8.25 8.25 0 0 0-.096-1.25l2.003-1.559a.75.75 0 0 0 .171-.951l-1.9-3.29a.75.75 0 0 0-.91-.334l-2.356.942a8.197 8.197 0 0 0-2.165-1.25l-.357-2.5A.75.75 0 0 0 12.75 1.5h-3.5a.75.75 0 0 0-.742.64l-.357 2.5a8.197 8.197 0 0 0-2.165 1.25l-2.356-.942a.75.75 0 0 0-.91.334l-1.9 3.29a.75.75 0 0 0 .171.951l2.003 1.559A8.25 8.25 0 0 0 3 12c0 .425.032.842.096 1.25l-2.003 1.559a.75.75 0 0 0-.171.951l1.9 3.29c.2.346.61.49.91.334l2.356-.942c.66.512 1.38.93 2.165 1.25l.357 2.5c.06.36.37.64.742.64h3.5c.372 0 .682-.28.742-.64l.357-2.5a8.197 8.197 0 0 0 2.165-1.25l2.356.942c.3.156.71.012.91-.334l1.9-3.29a.75.75 0 0 0-.171-.951l-2.003-1.559c.064-.408.096-.825.096-1.25Zm-6.75 3a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</header>
