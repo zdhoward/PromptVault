@@ -1,0 +1,34 @@
+/* ===============================
+   Light  — Tailwind parity
+   =============================== */
+html.theme-light {
+    /* Surfaces */
+    --pv-bg: #f9fafb;              /* gray-50 */
+    --pv-bg-tertiary: #f3f4f6;     /* gray-100 */
+    --pv-card-bg: #ffffff;
+    --pv-header-bg: #ffffff;
+
+    /* Text */
+    --pv-text: #111827;            /* gray-900 */
+    --pv-muted-text: #6b7280;      /* gray-500 */
+    --pv-title: #111827;
+
+    /* Borders / UI */
+    --pv-border: #e5e7eb;          /* gray-200 */
+    --pv-hover: #f3f4f6;           /* gray-100 */
+    --pv-selected: #e0e7ff;        /* indigo-100 */
+
+    /* Brand */
+    --pv-primary: #2563eb;         /* blue-600 */
+    --pv-secondary: #64748b;       /* slate-500 */
+    --pv-accent: #4f46e5;          /* indigo-600 */
+
+    /* Status */
+    --pv-success: #16a34a;
+    --pv-warning: #facc15;
+    --pv-error: #dc2626;
+    --pv-attention: #ea580c;
+
+    /* Overlay */
+    --pv-overlay: rgba(17, 24, 39, 0.5); /* gray-900 @ 50% */
+}

@@ -1,0 +1,44 @@
+/* ===============================
+   Dark — Tailwind parity (DEFAULT)
+   =============================== */
+html.theme-dark {
+    /* Surfaces */
+    --pv-bg: #020617;                  /* slate-950 */
+    --pv-bg-secondary: #020617;
+    --pv-bg-tertiary: #020617;
+    --pv-card-bg: #020617;             /* baseline */
+    --pv-header-bg: #020617;
+
+    /* Text */
+    --pv-text: #e5e7eb;                /* gray-200 */
+    --pv-muted-text: #9ca3af;          /* gray-400 */
+    --pv-title: #f9fafb;               /* gray-50 */
+
+    /* Borders / UI */
+    --pv-border: #1f2937;              /* gray-800 */
+    --pv-hover: #111827;               /* gray-900 */
+    --pv-selected: #1e3a8a;             /* blue-900 */
+    --pv-ring: #3b82f6;                /* blue-500 */
+
+    /* Brand */
+    --pv-primary: #3b82f6;              /* blue-500 */
+    --pv-primary-text: #020617;
+    --pv-secondary: #94a3b8;            /* slate-400 */
+    --pv-accent: #6366f1;               /* indigo-500 */
+
+    /* Status */
+    --pv-success: #22c55e;
+    --pv-warning: #facc15;
+    --pv-error: #f87171;
+    --pv-attention: #fb923c;
+
+    /* Overlays */
+    --pv-overlay: rgba(2, 6, 23, 0.7);
+
+    /* Chips / tags */
+    --pv-chip-bg: #020617;
+    --pv-chip-text: #e5e7eb;
+
+    /* Ratings */
+    --pv-star: #facc15;
+}
