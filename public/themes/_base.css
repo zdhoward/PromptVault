@@ -1,0 +1,26 @@
+/* ============================================================
+   PromptVault Theme Contract
+   DO NOT put colors directly in components.
+   Only variables live here.
+   ============================================================ */
+
+:root {
+    --pv-bg: theme(light);
+    --pv-surface: theme(light);
+    --pv-surface-2: theme(light);
+    --pv-border: theme(light);
+    --pv-text: theme(light);
+    --pv-muted: theme(light);
+    --pv-accent: theme(light);
+}
+
+/* Dark override */
+html.dark {
+    --pv-bg: theme(dark);
+    --pv-surface: theme(dark);
+    --pv-surface-2: theme(dark);
+    --pv-border: theme(dark);
+    --pv-text: theme(dark);
+    --pv-muted: theme(dark);
+    --pv-accent: theme(dark);
+}

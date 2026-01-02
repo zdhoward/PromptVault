@@ -1,0 +1,26 @@
+html.theme-high-contrast {
+    --pv-bg: #000000;
+    --pv-header-bg: #000000;
+    --pv-card-bg: #0a0a0a;
+    --pv-bg-tertiary: #111111;
+
+    --pv-text: #ffffff;
+    --pv-muted-text: #cbd5f5;
+    --pv-title: #ffffff;
+
+    --pv-border: #ffffff;
+
+    --pv-primary: #00ffff;
+    --pv-secondary: #ff00ff;
+    --pv-accent: #ffff00;
+
+    --pv-selected: #1e40af;
+    --pv-hover: #111111;
+
+    --pv-success: #00ff00;
+    --pv-warning: #ffff00;
+    --pv-error: #ff0000;
+    --pv-attention: #ff8800;
+
+    --pv-overlay: rgba(0,0,0,0.85);
+}

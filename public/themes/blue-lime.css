@@ -1,0 +1,31 @@
+@import "./_base.css";
+
+/* ===============================
+   Blue-Lime — Light
+   =============================== */
+html.theme-blue-lime {
+    --pv-bg: #f7fee7;
+    --pv-header-bg: #d9f99d;
+    --pv-card-bg: #ecfccb;
+    --pv-bg-tertiary: #f0fdd4;
+
+    --pv-text: #1a2e05;
+    --pv-muted-text: #4d7c0f;
+    --pv-title: #1a2e05;
+
+    --pv-border: #84cc16;
+
+    --pv-primary: #2563eb;
+    --pv-secondary: #65a30d;
+    --pv-accent: #84cc16;
+
+    --pv-selected: #365314;
+    --pv-hover: #d9f99d;
+
+    --pv-success: #16a34a;
+    --pv-warning: #facc15;
+    --pv-error: #dc2626;
+    --pv-attention: #ea580c;
+
+    --pv-overlay: rgba(0,0,0,0.4);
+}

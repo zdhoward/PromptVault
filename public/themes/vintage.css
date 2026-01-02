@@ -1,0 +1,26 @@
+html.theme-vintage {
+    --pv-bg: #f8f4e8;
+    --pv-header-bg: #ede5cf;
+    --pv-card-bg: #f3ecd8;
+    --pv-bg-tertiary: #e8dec4;
+
+    --pv-text: #3b2f2f;
+    --pv-muted-text: #6b5b53;
+    --pv-title: #2a1f1f;
+
+    --pv-border: #c8b892;
+
+    --pv-primary: #7c2d12;
+    --pv-secondary: #92400e;
+    --pv-accent: #b45309;
+
+    --pv-selected: #d6c4a0;
+    --pv-hover: #efe6cf;
+
+    --pv-success: #166534;
+    --pv-warning: #a16207;
+    --pv-error: #991b1b;
+    --pv-attention: #c2410c;
+
+    --pv-overlay: rgba(0,0,0,0.35);
+}

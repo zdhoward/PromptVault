@@ -1,0 +1,26 @@
+html.theme-angsty-robot {
+    --pv-bg: #0b0f14;
+    --pv-header-bg: #020617;
+    --pv-card-bg: #020617;
+    --pv-bg-tertiary: #111827;
+
+    --pv-text: #e5e7eb;
+    --pv-muted-text: #9ca3af;
+    --pv-title: #f9fafb;
+
+    --pv-border: #1f2937;
+
+    --pv-primary: #22d3ee;
+    --pv-secondary: #64748b;
+    --pv-accent: #38bdf8;
+
+    --pv-selected: #0f766e;
+    --pv-hover: #020617;
+
+    --pv-success: #22c55e;
+    --pv-warning: #facc15;
+    --pv-error: #ef4444;
+    --pv-attention: #fb7185;
+
+    --pv-overlay: rgba(0,0,0,0.7);
+}

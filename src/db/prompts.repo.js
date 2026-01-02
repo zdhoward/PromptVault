@@ -10,11 +10,11 @@ module.exports = function promptsRepo(db) {
 
         const tags = db
             .prepare(`
-        SELECT t.id, t.name
-        FROM tags t
-        JOIN prompt_tags pt ON t.id = pt.tag_id
-        WHERE pt.prompt_id = ?
-      `)
+                SELECT t.id, t.name
+                FROM tags t
+                         JOIN prompt_tags pt ON t.id = pt.tag_id
+                WHERE pt.prompt_id = ?
+            `)
             .all(id);
 
         return {
@@ -124,11 +124,11 @@ module.exports = function promptsRepo(db) {
         let enriched = rows.map(prompt => {
             const tags = db
                 .prepare(`
-          SELECT t.id, t.name
-          FROM tags t
-          JOIN prompt_tags pt ON t.id = pt.tag_id
-          WHERE pt.prompt_id = ?
-        `)
+                    SELECT t.id, t.name
+                    FROM tags t
+                             JOIN prompt_tags pt ON t.id = pt.tag_id
+                    WHERE pt.prompt_id = ?
+                `)
                 .all(prompt.id);
 
             return {
@@ -164,10 +164,10 @@ module.exports = function promptsRepo(db) {
 
             const result = db
                 .prepare(`
-          INSERT INTO prompts
-            (title, content, category, rating, is_featured, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-        `)
+                    INSERT INTO prompts
+                        (title, content, category, rating, is_featured, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                `)
                 .run(
                     data.title,
                     data.content,
@@ -204,10 +204,10 @@ module.exports = function promptsRepo(db) {
             const now = new Date().toISOString();
 
             db.prepare(`
-        UPDATE prompts
-        SET title = ?, content = ?, category = ?, rating = ?, is_featured = ?, updated_at = ?
-        WHERE id = ?
-      `).run(
+                UPDATE prompts
+                SET title = ?, content = ?, category = ?, rating = ?, is_featured = ?, updated_at = ?
+                WHERE id = ?
+            `).run(
                 data.title,
                 data.content,
                 data.category || null,
@@ -241,6 +241,16 @@ module.exports = function promptsRepo(db) {
                 .run(id);
 
             return result.changes > 0;
+        },
+
+        // used by /api/categories
+        listCategories() {
+            return db
+                .prepare(
+                    'SELECT DISTINCT category FROM prompts WHERE category IS NOT NULL ORDER BY category'
+                )
+                .all()
+                .map(r => r.category);
         },
     };
 };
