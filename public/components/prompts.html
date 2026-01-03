@@ -1,88 +1,102 @@
-<div class="prompt-grid flex-1 flex flex-col"
-     style="background: var(--pv-bg-grid);">
-
-    <!-- THIS fills remaining viewport -->
-    <div class="flex-1 flex flex-col">
-
-        <!-- THIS only controls width -->
-        <div class="max-w-7xl mx-auto w-full px-4 pt-6 pb-8 pv-shadow-xl-inverted flex-1">
-
-            <div
-                    x-show="!loading && prompts.length > 0"
-                    :class="viewMode === 'grid'
+<div
+  class="prompt-grid flex-1 flex flex-col"
+  style="background: var(--pv-bg-grid)"
+>
+  <!-- THIS fills remaining viewport -->
+  <div class="flex-1 flex flex-col">
+    <!-- THIS only controls width -->
+    <div
+      class="max-w-7xl mx-auto w-full px-4 pt-6 pb-8 pv-shadow-xl-inverted flex-1"
+    >
+      <div
+        x-show="!loading && prompts.length > 0"
+        :class="viewMode === 'grid'
                     ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
                     : 'space-y-3'"
-            >
-                <template x-for="prompt in prompts" :key="prompt.id">
-                    <div
-                            class="prompt-card group pv-shadow-sm hover:pv-shadow-md transition relative rounded-xl cursor-pointer"
-                            style="background: var(--pv-bg-surface); border: 1px solid var(--pv-border);"
-                            @click="copyPrompt(prompt)"
-                    >
-                        <div class="p-4 flex flex-col gap-2">
+      >
+        <template x-for="prompt in prompts" :key="prompt.id">
+          <div
+            class="prompt-card group pv-shadow-sm hover:pv-shadow-md transition relative rounded-xl cursor-pointer"
+            style="
+              background: var(--pv-bg-surface);
+              border: 1px solid var(--pv-border);
+            "
+            @click="copyPrompt(prompt)"
+          >
+            <div class="p-4 flex flex-col gap-2">
+              <!-- Title row -->
+              <div class="flex items-start gap-2">
+                <button
+                  type="button"
+                  class="pv-feature shrink-0"
+                  :data-on="prompt.is_featured ? 1 : 0"
+                  @click.stop="toggleFeatured(prompt)"
+                >
+                  ★
+                </button>
 
-                            <!-- Title row -->
-                            <div class="flex items-start gap-2">
-                                <button
-                                        type="button"
-                                        class="pv-feature shrink-0"
-                                        :data-on="prompt.is_featured ? 1 : 0"
-                                        @click.stop="toggleFeatured(prompt)"
-                                >★</button>
+                <h3
+                  class="font-semibold leading-tight flex-1 min-w-0 pr-12"
+                  x-text="prompt.title"
+                ></h3>
 
-                                <h3
-                                        class="font-semibold leading-tight flex-1 min-w-0 pr-12"
-                                        x-text="prompt.title"
-                                ></h3>
+                <div
+                  class="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition"
+                >
+                  <button
+                    type="button"
+                    class="pv-btn pv-btn-icon pv-btn-secondary"
+                    @click.stop="openEditor(prompt)"
+                  >
+                    ✎
+                  </button>
 
-                                <div class="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition">
-                                    <button
-                                            type="button"
-                                            class="pv-btn pv-btn-icon pv-btn-secondary"
-                                            @click.stop="openEditor(prompt)"
-                                    >✎</button>
+                  <button
+                    type="button"
+                    class="pv-btn pv-btn-icon pv-btn-secondary"
+                    @click.stop="deletePrompt(prompt.id)"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
 
-                                    <button
-                                            type="button"
-                                            class="pv-btn pv-btn-icon pv-btn-secondary"
-                                            @click.stop="deletePrompt(prompt.id)"
-                                    >×</button>
-                                </div>
-                            </div>
+              <p
+                class="text-sm text-[var(--pv-text-muted)] line-clamp-2"
+                x-text="prompt.preview ?? getPreview(prompt.content)"
+              ></p>
 
-                            <p
-                                    class="text-sm text-[var(--pv-text-muted)] line-clamp-2"
-                                    x-text="prompt.preview ?? getPreview(prompt.content)"
-                            ></p>
+              <div class="flex items-center justify-between pt-2 gap-3">
+                <div class="flex flex-wrap gap-1.5 min-w-0">
+                  <template
+                    x-for="tag in (prompt.tags || [])"
+                    :key="tag.id ?? tag"
+                  >
+                    <span
+                      class="pv-tag px-2 py-0.5 rounded text-xs"
+                      x-text="tag.name ?? tag"
+                    ></span>
+                  </template>
+                </div>
 
-                            <div class="flex items-center justify-between pt-2 gap-3">
-                                <div class="flex flex-wrap gap-1.5 min-w-0">
-                                    <template x-for="tag in (prompt.tags || [])" :key="tag.id ?? tag">
-                                        <span class="pv-tag px-2 py-0.5 rounded text-xs"
-                                              x-text="tag.name ?? tag"></span>
-                                    </template>
-                                </div>
-
-                                <div
-                                        class="pv-rating shrink-0"
-                                        :style="`--pv-rating:${prompt.rating ?? 0}`"
-                                ></div>
-                            </div>
-
-                        </div>
-                    </div>
-                </template>
+                <div
+                  class="pv-rating"
+                  :style="`--pv-rating:${prompt.rating ?? 0}`"
+                  aria-hidden="true"
+                ></div>
+              </div>
             </div>
+          </div>
+        </template>
+      </div>
 
-            <!-- Empty state -->
-            <div
-                    x-show="!loading && prompts.length === 0"
-                    class="flex-1 flex items-center justify-center
-                       text-sm text-[var(--pv-text-muted)]"
-            >
-                No prompts match your filters.
-            </div>
-
-        </div>
+      <!-- Empty state -->
+      <div
+        x-show="!loading && prompts.length === 0"
+        class="flex-1 flex items-center justify-center text-sm text-[var(--pv-text-muted)]"
+      >
+        No prompts match your filters.
+      </div>
     </div>
+  </div>
 </div>

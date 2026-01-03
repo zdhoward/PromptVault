@@ -1,63 +1,96 @@
 <div
-        x-show="showSettings"
-        x-cloak
-        @click.self="closeSettings()"
-        class="fixed inset-0 flex items-center justify-center z-50 p-4"
-        style="background: var(--pv-overlay);"
+  x-show="showSettings"
+  x-cloak
+  @click.self="closeSettings()"
+  class="fixed inset-0 flex items-center justify-center z-50 p-4"
+  style="background: var(--pv-overlay)"
 >
-    <div
-            class="modal w-full max-w-md pv-shadow-xl"
-            style="background: var(--pv-bg-elevated); border: 1px solid var(--pv-border);"
-    >
-        <div class="p-6 space-y-4">
+  <div
+    class="modal w-full max-w-md pv-shadow-xl"
+    style="
+      background: var(--pv-bg-elevated);
+      border: 1px solid var(--pv-border);
+    "
+  >
+    <div class="p-6 space-y-4">
+      <!-- Header -->
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-xl font-bold">Settings</h2>
 
-            <!-- Header -->
-            <div class="flex items-center justify-between gap-3">
-                <h2 class="text-xl font-bold">Settings</h2>
+        <button
+          type="button"
+          class="pv-btn pv-btn-icon pv-btn-secondary"
+          @click="closeSettings()"
+          aria-label="Close"
+          title="Close"
+        >
+          ×
+        </button>
+      </div>
 
-                <button
-                        type="button"
-                        class="pv-btn pv-btn-icon pv-btn-secondary"
-                        @click="closeSettings()"
-                        aria-label="Close"
-                        title="Close"
-                >
-                    ×
-                </button>
-            </div>
+      <!-- Theme selector -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-[var(--pv-text-muted)]">
+          Theme
+        </label>
 
-            <!-- Theme selector -->
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-[var(--pv-text-muted)]">
-                    Theme
-                </label>
+        <select
+          x-model="themePalette"
+          @change="applyPalette(themePalette)"
+          class="pv-input pv-select w-full"
+        >
+          <!-- Core -->
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="blue-lime">Blue Lime</option>
 
-                <select
-                        x-model="themePalette"
-                        @change="applyPalette(themePalette)"
-                        class="pv-input w-full"
-                >
-                    <option value="dark">Dark</option>
-                    <option value="light">Light</option>
-                    <option value="blue-lime">Blue Lime</option>
-                    <option value="vintage">Vintage</option>
-                    <option value="angsty-robot">Angsty Robot</option>
-                    <option value="high-contrast">High Contrast</option>
-                    <option value="mono-ink">Mono Ink</option>
-                </select>
-            </div>
+          <!-- Analog / Vintage -->
+          <option value="vintage">Vintage (TR-808)</option>
 
-            <!-- Footer (single action) -->
-            <div class="flex justify-end pt-2">
-                <button
-                        type="button"
-                        class="pv-btn pv-btn-normal pv-btn-muted"
-                        @click="closeSettings()"
-                >
-                    Close
-                </button>
-            </div>
+          <!-- Evangelion -->
+          <option value="angsty-robot">Angsty Robot</option>
+          <option value="angsty-robot-light">Angsty Robot (Light)</option>
 
-        </div>
+          <!-- IDE / Professional -->
+          <option value="one-dark-pro">One Dark Pro</option>
+          <option value="tokyo-night">Tokyo Night</option>
+          <option value="darcula">Darcula</option>
+          <option value="dracula">Dracula</option>
+          <option value="night-owl">Night Owl</option>
+          <option value="material-dark">Material Dark</option>
+
+          <!-- Retro / Neon -->
+          <option value="synthwave-84">Synthwave ’84</option>
+          <option value="synthwave-84-crt">Synthwave ’84 (CRT)</option>
+          <option value="nu-disco">Nu Disco</option>
+          <option value="outrun">Outrun</option>
+
+          <!-- Cyberpunk -->
+          <option value="cyberpunk">Cyberpunk</option>
+
+          <!-- Game Boy -->
+          <option value="gameboy">Game Boy</option>
+          <option value="gameboy-dither">Game Boy (Dither)</option>
+
+          <!-- Parchment -->
+          <option value="parchment">Parchment</option>
+          <option value="parchment-grain">Parchment (Grain)</option>
+
+          <!-- Experimental -->
+          <option value="analog-dystopia">Analog Dystopia</option>
+        </select>
+      </div>
+
+      <!-- Footer (single action) -->
+      <div class="flex justify-end pt-2">
+        <button
+          type="button"
+          class="pv-btn pv-btn-normal pv-btn-muted"
+          @click="closeSettings()"
+        >
+          Close
+        </button>
+      </div>
     </div>
+  </div>
 </div>

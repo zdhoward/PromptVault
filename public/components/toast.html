@@ -1,8 +1,12 @@
 <div
-        x-show="toast.show"
-        x-transition
-        class="toast fixed bottom-4 right-4 px-6 py-3 rounded-lg pv-shadow-lg border"
-        style="background: var(--pv-bg-elevated); color: var(--pv-text-elevated); border-color: var(--pv-border);"
+  x-show="toast.show"
+  x-transition
+  class="toast fixed bottom-4 right-4 px-6 py-3 rounded-lg pv-shadow-lg border"
+  style="
+    background: var(--pv-bg-elevated);
+    color: var(--pv-text-elevated);
+    border-color: var(--pv-border);
+  "
 >
-    <span x-text="toast.message"></span>
+  <span x-text="toast.message"></span>
 </div>

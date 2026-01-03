@@ -1,0 +1,129 @@
+@import "./_base.css";
+
+/* ============================================================================
+   PromptVault Theme — Game Boy (DMG)
+   Monochrome green, low-bit depth inspired
+============================================================================ */
+
+html.theme-gameboy-dither {
+  --pv-theme-is-dark: 1;
+
+  /* ------------------------------------------------------------------------
+       App / page background
+    ------------------------------------------------------------------------ */
+  --pv-bg-app:
+    repeating-linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.05),
+      rgba(0, 0, 0, 0.05) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    #2f4f2f;
+  --pv-text-app: #cfe3a1; /* pale phosphor */
+
+  /* ------------------------------------------------------------------------
+       Header
+    ------------------------------------------------------------------------ */
+  --pv-bg-header: #0f1f0f;
+  --pv-text-header: #cfe3a1;
+
+  /* ------------------------------------------------------------------------
+       Surfaces (stepped luminance, same hue)
+    ------------------------------------------------------------------------ */
+  --pv-bg-surface:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.18)),
+    #3a5f3a;
+  --pv-bg-surface-muted: #1b331b; /* trays */
+  --pv-bg-elevated:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.16), rgba(0, 0, 0, 0.25)),
+    #446b44;
+
+  --pv-text-surface: #cfe3a1;
+  --pv-text-muted: #9bbc0f; /* classic GB light green */
+
+  /* ------------------------------------------------------------------------
+       Borders / dividers
+    ------------------------------------------------------------------------ */
+  --pv-border: rgba(155, 188, 15, 0.28);
+
+  /* ------------------------------------------------------------------------
+       Controls
+    ------------------------------------------------------------------------ */
+  --pv-bg-control: #1b331b;
+  --pv-bg-control-hover: rgba(155, 188, 15, 0.14);
+  --pv-bg-control-active: rgba(155, 188, 15, 0.32);
+
+  --pv-text-control: #cfe3a1;
+  --pv-text-control-muted: #9bbc0f;
+  --pv-text-control-active: #0f1f0f;
+
+  /* ------------------------------------------------------------------------
+       Primary / intent
+       (brightest phosphor green)
+    ------------------------------------------------------------------------ */
+  --pv-bg-primary: #9bbc0f;
+  --pv-bg-primary-hover: #8bac0d;
+  --pv-text-primary-on: #0f1f0f;
+
+  --pv-bg-secondary: #306230;
+  --pv-bg-secondary-hover: #3b733b;
+  --pv-text-secondary-on: #cfe3a1;
+
+  --pv-bg-danger: #8bac0d; /* GB had no red — keep in-family */
+  --pv-bg-danger-hover: #7a9b0b;
+  --pv-text-danger-on: #0f1f0f;
+
+  --pv-bg-success: #9bbc0f;
+  --pv-text-success-on: #0f1f0f;
+
+  /* ------------------------------------------------------------------------
+       Inputs
+    ------------------------------------------------------------------------ */
+  --pv-bg-input: #0f1f0f;
+  --pv-text-input: #cfe3a1;
+  --pv-placeholder: #8bac0d;
+  --pv-border-input: rgba(155, 188, 15, 0.32);
+  --pv-focus-ring: rgba(155, 188, 15, 0.55);
+
+  /* ------------------------------------------------------------------------
+       Tags / tertiary UI
+    ------------------------------------------------------------------------ */
+  --pv-bg-tertiary: #306230;
+  --pv-text-tertiary-on: #cfe3a1;
+  --pv-border-tertiary: rgba(155, 188, 15, 0.36);
+
+  /* ------------------------------------------------------------------------
+       Ratings / featured
+    ------------------------------------------------------------------------ */
+  --pv-star-empty: rgba(155, 188, 15, 0.35);
+  --pv-star-full: #9bbc0f;
+
+  --pv-rating-empty: rgba(155, 188, 15, 0.22);
+  --pv-rating-full: #9bbc0f;
+
+  /* ------------------------------------------------------------------------
+       Overlay
+    ------------------------------------------------------------------------ */
+  --pv-overlay: rgba(15, 31, 15, 0.8);
+
+  /* ------------------------------------------------------------------------
+       Shadows (subtle — GB screens had no depth)
+    ------------------------------------------------------------------------ */
+  --pv-shadow-sm: 0 1px 1px rgba(0, 0, 0, 0.35);
+  --pv-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.45);
+  --pv-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.55);
+  --pv-shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.6);
+
+  /* ------------------------------------------------------------------------
+       Logo
+    ------------------------------------------------------------------------ */
+  --pv-logo-filter: sepia(0.25) saturate(1.1) brightness(0.95);
+}

@@ -1,11 +1,11 @@
 <div
-        x-show="open"
-        x-cloak
-        @click.self="onClose()"
-        class="fixed inset-0 flex items-center justify-center z-50 p-4"
-        style="background: var(--pv-overlay);"
+  x-show="open"
+  x-cloak
+  @click.self="onClose()"
+  class="fixed inset-0 flex items-center justify-center z-50 p-4"
+  style="background: var(--pv-overlay)"
 >
-    <div class="modal w-full pv-shadow-xl">
-        <div x-ref="content"></div>
-    </div>
+  <div class="modal w-full pv-shadow-xl">
+    <div x-ref="content"></div>
+  </div>
 </div>

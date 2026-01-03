@@ -1,68 +1,68 @@
 <div
-        x-show="showPageEditor"
-        x-cloak
-        @click.self="closePageEditor()"
-        class="fixed inset-0 flex items-center justify-center z-50 p-4"
-        style="background: var(--pv-overlay);"
+  x-show="showPageEditor"
+  x-cloak
+  @click.self="closePageEditor()"
+  class="fixed inset-0 flex items-center justify-center z-50 p-4"
+  style="background: var(--pv-overlay)"
 >
-    <div class="modal w-full pv-shadow-xl max-w-md">
-        <div class="p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold">Create Page</h2>
+  <div class="modal w-full pv-shadow-xl max-w-md">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold">Create Page</h2>
 
-                <button
-                        class="pv-btn pv-btn-icon pv-btn-secondary"
-                        @click="closePageEditor()"
-                >
-                    ×
-                </button>
-            </div>
+        <button
+          class="pv-btn pv-btn-icon pv-btn-secondary"
+          @click="closePageEditor()"
+        >
+          ×
+        </button>
+      </div>
 
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1 text-[var(--pv-text-muted)]">
-                        Page Name
-                    </label>
-                    <input
-                            type="text"
-                            x-model="newPageName"
-                            placeholder="e.g., Trading Prompts"
-                            class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2"
-                            style="
-                            background: var(--pv-bg-input);
-                            color: var(--pv-text-input);
-                            border-color: var(--pv-border-input);
-                            --tw-ring-color: var(--pv-focus-ring);
-                        "
-                    >
-                </div>
-
-                <p class="text-sm text-[var(--pv-text-muted)]">
-                    This page will save your current filters.
-                </p>
-
-                <!-- Right-side actions -->
-                <div class="flex items-center gap-4">
-
-                    <!-- View toggle (Grid / List) -->
-                    <div
-                            class="relative"
-                            hx-get="/components/view-toggle.html"
-                            hx-trigger="load"
-                            hx-swap="innerHTML"
-                    ></div>
-
-                    <!-- New Prompt -->
-                    <button
-                            type="button"
-                            class="pv-btn pv-btn-normal pv-btn-primary"
-                            @click="openEditor()"
-                    >
-                        + New Prompt
-                    </button>
-                </div>
-
-            </div>
+      <div class="space-y-4">
+        <div>
+          <label
+            class="block text-sm font-medium mb-1 text-[var(--pv-text-muted)]"
+          >
+            Page Name
+          </label>
+          <input
+            type="text"
+            x-model="newPageName"
+            placeholder="e.g., Trading Prompts"
+            class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2"
+            style="
+              background: var(--pv-bg-input);
+              color: var(--pv-text-input);
+              border-color: var(--pv-border-input);
+              --tw-ring-color: var(--pv-focus-ring);
+            "
+          />
         </div>
+
+        <p class="text-sm text-[var(--pv-text-muted)]">
+          This page will save your current filters.
+        </p>
+
+        <!-- Right-side actions -->
+        <div class="flex items-center gap-4">
+          <!-- View toggle (Grid / List) -->
+          <div
+            class="relative"
+            hx-get="/components/view-toggle.html"
+            hx-trigger="load"
+            hx-swap="innerHTML"
+          ></div>
+
+          <!-- New Prompt -->
+          <button
+            type="button"
+            class="pv-btn pv-btn-normal pv-btn-primary"
+            @click="openEditor()"
+          >
+            + New Prompt
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

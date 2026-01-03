@@ -1,11 +1,11 @@
 function buildCategoriesHandlers({ repos }) {
-    return {
-        listCategories() {
-            return {
-                categories: repos.prompts.listCategories(),
-            };
-        },
-    };
+  return {
+    listCategories() {
+      return {
+        categories: repos.prompts.listCategories(),
+      };
+    },
+  };
 }
 
 module.exports = { buildCategoriesHandlers };

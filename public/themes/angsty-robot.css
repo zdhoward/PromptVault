@@ -1,18 +1,85 @@
 @import "./_base.css";
 
+/* ============================================================================
+   PromptVault Theme — Angsty Robot (Dark)
+   Modern flat • studio console • restrained elevation
+============================================================================ */
+
 html.theme-angsty-robot {
-    --pv-theme-is-dark: 1;
+  --pv-theme-is-dark: 1;
 
-    --pv-bg-app: #0b0f14;
-    --pv-bg-header: #020617;
-    --pv-bg-surface: #020617;
-    --pv-bg-surface-muted: #111827;
+  /* App */
+  --pv-bg-app: #1a1830;
+  --pv-text-app: #eef1f6;
 
-    --pv-border: #1f2937;
+  /* Header */
+  --pv-bg-header: #211e3d;
+  --pv-text-header: #eef1f6;
 
-    --pv-text-secondary: #9ca3af;
-    --pv-text-link: #22d3ee;
+  /* Surfaces */
+  --pv-bg-surface: #262354;
+  --pv-bg-surface-muted: #201d47;
+  --pv-bg-elevated: #2e2a66;
 
-    --pv-bg-primary: #22d3ee;
-    --pv-text-primary-on: #020617;
+  --pv-text-surface: #eef1f6;
+  --pv-text-muted: #b3b8d4;
+
+  /* Borders */
+  --pv-border: rgba(238, 241, 246, 0.16);
+  --pv-border-strong: rgba(238, 241, 246, 0.28);
+  --pv-divider: rgba(238, 241, 246, 0.1);
+
+  /* Controls */
+  --pv-bg-control: #242152;
+  --pv-bg-control-hover: rgba(255, 255, 255, 0.1);
+  --pv-bg-control-active: rgba(166, 255, 80, 0.4);
+
+  --pv-text-control: #eef1f6;
+  --pv-text-control-muted: #b3b8d4;
+  --pv-text-control-active: #14131f;
+
+  /* Primary (signal green) */
+  --pv-bg-primary: #a6ff50;
+  --pv-bg-primary-hover: #90e645;
+  --pv-text-primary-on: #14131f;
+
+  /* Secondary (cool cyan) */
+  --pv-bg-secondary: #5fd6ff;
+  --pv-bg-secondary-hover: #4bc3ea;
+  --pv-text-secondary-on: #14131f;
+
+  /* Danger */
+  --pv-bg-danger: #ff3b3b;
+  --pv-bg-danger-hover: #e63333;
+  --pv-text-danger-on: #14131f;
+
+  /* Success */
+  --pv-bg-success: #6bbf8a;
+  --pv-text-success-on: #14131f;
+
+  /* Inputs */
+  --pv-bg-input: #1c1a3a;
+  --pv-text-input: #eef1f6;
+  --pv-placeholder: #b3b8d4;
+  --pv-border-input: rgba(255, 255, 255, 0.26);
+  --pv-focus-ring: rgba(166, 255, 80, 0.65);
+
+  /* Ratings */
+  --pv-star-empty: rgba(238, 241, 246, 0.35);
+  --pv-star-full: #a6ff50;
+
+  --pv-rating-empty: rgba(238, 241, 246, 0.22);
+  --pv-rating-full: #a6ff50;
+
+  /* Overlay */
+  --pv-overlay: rgba(26, 24, 48, 0.82);
+
+  /* Shadows (primary elevation signal) */
+  --pv-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --pv-shadow-md: 0 6px 14px rgba(0, 0, 0, 0.55);
+  --pv-shadow-lg: 0 14px 28px rgba(0, 0, 0, 0.65);
+  --pv-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.75);
+
+  /* Logo */
+  --pv-logo-filter: saturate(1.15) brightness(1.05);
 }

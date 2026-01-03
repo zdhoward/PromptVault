@@ -1,0 +1,124 @@
+@import "./_base.css";
+@import "./parchment.css";
+
+/* ============================================================================
+   PromptVault Theme — Parchment (Grain)
+   FULL VARIANT OVERRIDE (no gaps)
+============================================================================ */
+
+html.theme-parchment-grain {
+  --pv-theme-is-dark: 0;
+
+  /* App / page (paper grain) */
+  --pv-bg-app:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.015),
+      rgba(0, 0, 0, 0.015) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.02),
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    #f1e6cf;
+  --pv-text-app: #3a3328;
+
+  /* Header */
+  --pv-bg-header: #ede1c8;
+  --pv-text-header: #3a3328;
+
+  /* Surfaces (layered paper) */
+  --pv-bg-surface:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.06)),
+    #f6edd9;
+
+  --pv-bg-surface-muted:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.05)),
+    #e8dcc3;
+
+  --pv-bg-elevated:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.26), rgba(0, 0, 0, 0.08)),
+    #dfd2b7;
+
+  --pv-text-surface: #3a3328;
+  --pv-text-muted: #6b5f4a;
+
+  /* Borders / dividers */
+  --pv-border: rgba(58, 51, 40, 0.16);
+  --pv-border-strong: rgba(58, 51, 40, 0.26);
+  --pv-divider: rgba(58, 51, 40, 0.1);
+
+  /* Controls */
+  --pv-bg-control:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.18), rgba(0, 0, 0, 0.04)),
+    #e8dcc3;
+
+  --pv-bg-control-hover: rgba(58, 51, 40, 0.08);
+  --pv-bg-control-active: rgba(58, 51, 40, 0.16);
+
+  --pv-text-control: #3a3328;
+  --pv-text-control-muted: #6b5f4a;
+  --pv-text-control-active: #3a3328;
+
+  /* Primary (ink) */
+  --pv-bg-primary: #3a3328;
+  --pv-bg-primary-hover: #2e281f;
+  --pv-text-primary-on: #f6edd9;
+
+  /* Secondary */
+  --pv-bg-secondary: #d8cbb0;
+  --pv-bg-secondary-hover: #cbbd9f;
+  --pv-text-secondary-on: #3a3328;
+
+  /* Danger */
+  --pv-bg-danger: #7a2e2e;
+  --pv-bg-danger-hover: #662525;
+  --pv-text-danger-on: #f6edd9;
+
+  /* Success */
+  --pv-bg-success: #5a6b3a;
+  --pv-text-success-on: #f6edd9;
+
+  /* Inputs */
+  --pv-bg-input:
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.22), rgba(0, 0, 0, 0.04)),
+    #f6edd9;
+
+  --pv-text-input: #3a3328;
+  --pv-placeholder: #8a7c64;
+  --pv-border-input: rgba(58, 51, 40, 0.24);
+  --pv-focus-ring: rgba(58, 51, 40, 0.36);
+
+  /* Tertiary / tags */
+  --pv-bg-tertiary: #dfd2b7;
+  --pv-text-tertiary-on: #3a3328;
+  --pv-border-tertiary: rgba(58, 51, 40, 0.2);
+
+  /* Ratings */
+  --pv-star-empty: rgba(58, 51, 40, 0.32);
+  --pv-star-full: #3a3328;
+  --pv-rating-empty: rgba(58, 51, 40, 0.18);
+  --pv-rating-full: #3a3328;
+
+  /* Overlay */
+  --pv-overlay: rgba(241, 230, 207, 0.88);
+
+  /* Shadows (paper lift) */
+  --pv-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.12);
+  --pv-shadow-md: 0 6px 12px rgba(0, 0, 0, 0.16);
+  --pv-shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.2);
+  --pv-shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.24);
+
+  --pv-shadow-sm-inverted: 0 -1px 2px rgba(0, 0, 0, 0.08);
+  --pv-shadow-md-inverted: 0 -6px 12px rgba(0, 0, 0, 0.12);
+  --pv-shadow-lg-inverted: 0 -12px 24px rgba(0, 0, 0, 0.16);
+  --pv-shadow-xl-inverted: 0 -20px 40px rgba(0, 0, 0, 0.2);
+
+  /* Logo */
+  --pv-logo-filter: sepia(0.4) saturate(0.9) brightness(0.95);
+}

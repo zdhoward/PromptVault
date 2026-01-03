@@ -1,0 +1,125 @@
+@import "./_base.css";
+
+/* ============================================================================
+   PromptVault Theme — Angsty Robot (Light)
+   ---------------------------------------------------------------------------
+   EVA control room (day shift)
+   Lavender environment, purple structure, green signal accents.
+============================================================================ */
+
+html.theme-angsty-robot-light {
+  /* ------------------------------------------------------------------------
+       Theme mode
+    ------------------------------------------------------------------------ */
+  --pv-theme-is-dark: 0;
+
+  /* ------------------------------------------------------------------------
+       App / page background (environment)
+    ------------------------------------------------------------------------ */
+  --pv-bg-app: #e6e3f0; /* lavender-gray */
+  --pv-text-app: #1a1c24;
+
+  /* ------------------------------------------------------------------------
+       Header (EVA purple armor)
+    ------------------------------------------------------------------------ */
+  --pv-bg-header: #5f2a62;
+  --pv-text-header: #ffffff;
+
+  /* ------------------------------------------------------------------------
+       Surfaces (cards, panels)
+    ------------------------------------------------------------------------ */
+  --pv-bg-surface: #f4f1fa; /* card body */
+  --pv-bg-surface-muted: #ebe7f4; /* toolbars / filters */
+  --pv-bg-elevated: #ffffff; /* modals only */
+
+  --pv-text-surface: #1a1c24;
+  --pv-text-muted: #5e647a;
+
+  /* ------------------------------------------------------------------------
+       Borders & dividers
+    ------------------------------------------------------------------------ */
+  --pv-border: rgba(26, 28, 36, 0.18);
+  --pv-border-strong: rgba(26, 28, 36, 0.3);
+  --pv-divider: rgba(26, 28, 36, 0.12);
+
+  /* ------------------------------------------------------------------------
+       Controls (buttons, toggles)
+    ------------------------------------------------------------------------ */
+  --pv-bg-control: #ebe7f4;
+  --pv-bg-control-hover: rgba(26, 28, 36, 0.06);
+  --pv-bg-control-active: rgba(160, 222, 89, 0.4);
+
+  --pv-text-control: #1a1c24;
+  --pv-text-control-muted: #5e647a;
+  --pv-text-control-active: #1a1c24;
+
+  /* ------------------------------------------------------------------------
+       Primary / intent colors
+       (signal green — EVA UI highlight)
+    ------------------------------------------------------------------------ */
+  --pv-bg-primary: #a0de59;
+  --pv-bg-primary-hover: #8ac94c;
+  --pv-text-primary-on: #1a1c24;
+
+  /* Secondary (structural purple) */
+  --pv-bg-secondary: #6f3a73;
+  --pv-bg-secondary-hover: #5f2a62;
+  --pv-text-secondary-on: #ffffff;
+
+  /* Danger (alert red) */
+  --pv-bg-danger: #e72e2e;
+  --pv-bg-danger-hover: #c92727;
+  --pv-text-danger-on: #ffffff;
+
+  /* Success */
+  --pv-bg-success: #4fa37a;
+  --pv-text-success-on: #ffffff;
+
+  /* ------------------------------------------------------------------------
+       Inputs
+    ------------------------------------------------------------------------ */
+  --pv-bg-input: #ffffff;
+  --pv-text-input: #1a1c24;
+  --pv-placeholder: #5e647a;
+  --pv-border-input: rgba(26, 28, 36, 0.26);
+  --pv-focus-ring: rgba(160, 222, 89, 0.55);
+
+  /* ------------------------------------------------------------------------
+       Tags / tertiary UI
+    ------------------------------------------------------------------------ */
+  --pv-bg-tertiary: #e0dced;
+  --pv-text-tertiary-on: #1a1c24;
+  --pv-border-tertiary: rgba(26, 28, 36, 0.22);
+
+  /* ------------------------------------------------------------------------
+       Ratings / featured
+    ------------------------------------------------------------------------ */
+  --pv-star-empty: rgba(26, 28, 36, 0.35);
+  --pv-star-full: #a0de59;
+
+  --pv-rating-empty: rgba(26, 28, 36, 0.25);
+  --pv-rating-full: #a0de59;
+
+  /* ------------------------------------------------------------------------
+       Overlay
+    ------------------------------------------------------------------------ */
+  --pv-overlay: rgba(230, 227, 240, 0.85);
+
+  /* ------------------------------------------------------------------------
+       Shadows (light elevation)
+    ------------------------------------------------------------------------ */
+  --pv-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.14);
+  --pv-shadow-md: 0 6px 14px rgba(0, 0, 0, 0.18);
+  --pv-shadow-lg: 0 14px 28px rgba(0, 0, 0, 0.22);
+  --pv-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.26);
+
+  --pv-shadow-sm-inverted: 0 -1px 2px rgba(0, 0, 0, 0.1);
+  --pv-shadow-md-inverted: 0 -6px 14px rgba(0, 0, 0, 0.14);
+  --pv-shadow-lg-inverted: 0 -14px 28px rgba(0, 0, 0, 0.18);
+  --pv-shadow-xl-inverted: 0 -24px 48px rgba(0, 0, 0, 0.22);
+
+  /* ------------------------------------------------------------------------
+       Logo
+    ------------------------------------------------------------------------ */
+  --pv-logo-filter: saturate(1.15) contrast(1.05);
+}

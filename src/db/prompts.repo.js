@@ -1,256 +1,252 @@
 module.exports = function promptsRepo(db) {
-    // --- Internal helpers (copied verbatim) ---
+  // --- Internal helpers (copied verbatim) ---
 
-    function getPromptWithTags(id) {
-        const prompt = db
-            .prepare('SELECT * FROM prompts WHERE id = ?')
-            .get(id);
+  function getPromptWithTags(id) {
+    const prompt = db.prepare("SELECT * FROM prompts WHERE id = ?").get(id);
 
-        if (!prompt) return null;
+    if (!prompt) return null;
 
-        const tags = db
-            .prepare(`
+    const tags = db
+      .prepare(
+        `
                 SELECT t.id, t.name
                 FROM tags t
                          JOIN prompt_tags pt ON t.id = pt.tag_id
                 WHERE pt.prompt_id = ?
-            `)
-            .all(id);
+            `
+      )
+      .all(id);
 
-        return {
-            ...prompt,
-            tags,
-            is_featured: Boolean(prompt.is_featured),
-        };
+    return {
+      ...prompt,
+      tags,
+      is_featured: Boolean(prompt.is_featured),
+    };
+  }
+
+  function upsertTags(tagNames) {
+    const tagIds = [];
+
+    const insertTag = db.prepare(
+      "INSERT OR IGNORE INTO tags (name) VALUES (?)"
+    );
+    const getTag = db.prepare("SELECT id FROM tags WHERE name = ?");
+
+    for (const name of tagNames) {
+      insertTag.run(name);
+      const tag = getTag.get(name);
+      tagIds.push(tag.id);
     }
 
-    function upsertTags(tagNames) {
-        const tagIds = [];
+    return tagIds;
+  }
 
-        const insertTag = db.prepare(
-            'INSERT OR IGNORE INTO tags (name) VALUES (?)'
-        );
-        const getTag = db.prepare(
-            'SELECT id FROM tags WHERE name = ?'
-        );
+  function getAllPromptsWithTags(filters, filterEngine) {
+    let query = "SELECT DISTINCT p.* FROM prompts p";
+    const params = [];
+    const conditions = [];
 
-        for (const name of tagNames) {
-            insertTag.run(name);
-            const tag = getTag.get(name);
-            tagIds.push(tag.id);
-        }
-
-        return tagIds;
+    // Join tags if filtering by tags
+    if (filters.tags && filters.tags.length > 0) {
+      query +=
+        " JOIN prompt_tags pt ON p.id = pt.prompt_id" +
+        " JOIN tags t ON pt.tag_id = t.id";
+      conditions.push(`t.name IN (${filters.tags.map(() => "?").join(",")})`);
+      params.push(...filters.tags);
     }
 
-    function getAllPromptsWithTags(filters, filterEngine) {
-        let query = 'SELECT DISTINCT p.* FROM prompts p';
-        const params = [];
-        const conditions = [];
+    // Category filter
+    if (filters.category) {
+      conditions.push("p.category = ?");
+      params.push(filters.category);
+    }
 
-        // Join tags if filtering by tags
-        if (filters.tags && filters.tags.length > 0) {
-            query +=
-                ' JOIN prompt_tags pt ON p.id = pt.prompt_id' +
-                ' JOIN tags t ON pt.tag_id = t.id';
-            conditions.push(
-                `t.name IN (${filters.tags.map(() => '?').join(',')})`
-            );
-            params.push(...filters.tags);
-        }
+    // Rating filters
+    if (filters.minRating !== undefined) {
+      conditions.push("p.rating >= ?");
+      params.push(filters.minRating);
+    }
 
-        // Category filter
-        if (filters.category) {
-            conditions.push('p.category = ?');
-            params.push(filters.category);
-        }
+    if (filters.maxRating !== undefined) {
+      conditions.push("p.rating <= ?");
+      params.push(filters.maxRating);
+    }
 
-        // Rating filters
-        if (filters.minRating !== undefined) {
-            conditions.push('p.rating >= ?');
-            params.push(filters.minRating);
-        }
+    // Search (LIKE-based)
+    if (filters.search) {
+      conditions.push("(p.title LIKE ? OR p.content LIKE ?)");
+      const term = `%${filters.search}%`;
+      params.push(term, term);
+    }
 
-        if (filters.maxRating !== undefined) {
-            conditions.push('p.rating <= ?');
-            params.push(filters.maxRating);
-        }
+    // Featured filter
+    if (filters.featured) {
+      conditions.push("p.is_featured = 1");
+    }
 
-        // Search (LIKE-based)
-        if (filters.search) {
-            conditions.push('(p.title LIKE ? OR p.content LIKE ?)');
-            const term = `%${filters.search}%`;
-            params.push(term, term);
-        }
+    if (conditions.length > 0) {
+      query += " WHERE " + conditions.join(" AND ");
+    }
 
-        // Featured filter
-        if (filters.featured) {
-            conditions.push('p.is_featured = 1');
-        }
+    // Sorting
+    const sortMap = {
+      newest: "p.created_at DESC",
+      oldest: "p.created_at ASC",
+      rating: "p.rating DESC",
+      alpha: "p.title ASC",
+    };
 
-        if (conditions.length > 0) {
-            query += ' WHERE ' + conditions.join(' AND ');
-        }
+    query +=
+      " ORDER BY p.is_featured DESC, " +
+      (sortMap[filters.sort] || sortMap.newest);
 
-        // Sorting
-        const sortMap = {
-            newest: 'p.created_at DESC',
-            oldest: 'p.created_at ASC',
-            rating: 'p.rating DESC',
-            alpha: 'p.title ASC',
-        };
+    const compiledRegex = filterEngine.compileRegexFilters(filters.regex);
 
-        query +=
-            ' ORDER BY p.is_featured DESC, ' +
-            (sortMap[filters.sort] || sortMap.newest);
+    const limit = filters.limit || 50;
+    const offset = filters.offset || 0;
 
-        const compiledRegex = filterEngine.compileRegexFilters(
-            filters.regex
-        );
+    if (!compiledRegex) {
+      query += " LIMIT ? OFFSET ?";
+      params.push(limit, offset);
+    } else {
+      // Cap rows before regex filtering
+      query += " LIMIT 5000";
+    }
 
-        const limit = filters.limit || 50;
-        const offset = filters.offset || 0;
+    const rows = db.prepare(query).all(...params);
 
-        if (!compiledRegex) {
-            query += ' LIMIT ? OFFSET ?';
-            params.push(limit, offset);
-        } else {
-            // Cap rows before regex filtering
-            query += ' LIMIT 5000';
-        }
-
-        const rows = db.prepare(query).all(...params);
-
-        let enriched = rows.map(prompt => {
-            const tags = db
-                .prepare(`
+    let enriched = rows.map((prompt) => {
+      const tags = db
+        .prepare(
+          `
                     SELECT t.id, t.name
                     FROM tags t
                              JOIN prompt_tags pt ON t.id = pt.tag_id
                     WHERE pt.prompt_id = ?
-                `)
-                .all(prompt.id);
+                `
+        )
+        .all(prompt.id);
 
-            return {
-                ...prompt,
-                tags,
-                is_featured: Boolean(prompt.is_featured),
-            };
-        });
+      return {
+        ...prompt,
+        tags,
+        is_featured: Boolean(prompt.is_featured),
+      };
+    });
 
-        if (compiledRegex) {
-            enriched = enriched.filter(p =>
-                filterEngine.promptMatchesRegex(p, compiledRegex)
-            );
-            enriched = enriched.slice(offset, offset + limit);
-        }
-
-        return enriched;
+    if (compiledRegex) {
+      enriched = enriched.filter((p) =>
+        filterEngine.promptMatchesRegex(p, compiledRegex)
+      );
+      enriched = enriched.slice(offset, offset + limit);
     }
 
-    // --- Public API ---
+    return enriched;
+  }
 
-    return {
-        getPromptById(id) {
-            return getPromptWithTags(id);
-        },
+  // --- Public API ---
 
-        listPrompts(filters, filterEngine) {
-            return getAllPromptsWithTags(filters, filterEngine);
-        },
+  return {
+    getPromptById(id) {
+      return getPromptWithTags(id);
+    },
 
-        createPrompt(data) {
-            const now = new Date().toISOString();
+    listPrompts(filters, filterEngine) {
+      return getAllPromptsWithTags(filters, filterEngine);
+    },
 
-            const result = db
-                .prepare(`
+    createPrompt(data) {
+      const now = new Date().toISOString();
+
+      const result = db
+        .prepare(
+          `
                     INSERT INTO prompts
                         (title, content, category, rating, is_featured, created_at, updated_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
-                `)
-                .run(
-                    data.title,
-                    data.content,
-                    data.category || null,
-                    data.rating || 0,
-                    data.is_featured ? 1 : 0,
-                    now,
-                    now
-                );
+                `
+        )
+        .run(
+          data.title,
+          data.content,
+          data.category || null,
+          data.rating || 0,
+          data.is_featured ? 1 : 0,
+          now,
+          now
+        );
 
-            const promptId = result.lastInsertRowid;
+      const promptId = result.lastInsertRowid;
 
-            if (data.tags && data.tags.length > 0) {
-                const tagIds = upsertTags(data.tags);
-                const insertPromptTag = db.prepare(
-                    'INSERT INTO prompt_tags (prompt_id, tag_id) VALUES (?, ?)'
-                );
+      if (data.tags && data.tags.length > 0) {
+        const tagIds = upsertTags(data.tags);
+        const insertPromptTag = db.prepare(
+          "INSERT INTO prompt_tags (prompt_id, tag_id) VALUES (?, ?)"
+        );
 
-                for (const tagId of tagIds) {
-                    insertPromptTag.run(promptId, tagId);
-                }
-            }
+        for (const tagId of tagIds) {
+          insertPromptTag.run(promptId, tagId);
+        }
+      }
 
-            return getPromptWithTags(promptId);
-        },
+      return getPromptWithTags(promptId);
+    },
 
-        updatePrompt(id, data) {
-            const existing = db
-                .prepare('SELECT id FROM prompts WHERE id = ?')
-                .get(id);
+    updatePrompt(id, data) {
+      const existing = db
+        .prepare("SELECT id FROM prompts WHERE id = ?")
+        .get(id);
 
-            if (!existing) return null;
+      if (!existing) return null;
 
-            const now = new Date().toISOString();
+      const now = new Date().toISOString();
 
-            db.prepare(`
+      db.prepare(
+        `
                 UPDATE prompts
                 SET title = ?, content = ?, category = ?, rating = ?, is_featured = ?, updated_at = ?
                 WHERE id = ?
-            `).run(
-                data.title,
-                data.content,
-                data.category || null,
-                data.rating || 0,
-                data.is_featured ? 1 : 0,
-                now,
-                id
-            );
+            `
+      ).run(
+        data.title,
+        data.content,
+        data.category || null,
+        data.rating || 0,
+        data.is_featured ? 1 : 0,
+        now,
+        id
+      );
 
-            db.prepare(
-                'DELETE FROM prompt_tags WHERE prompt_id = ?'
-            ).run(id);
+      db.prepare("DELETE FROM prompt_tags WHERE prompt_id = ?").run(id);
 
-            if (data.tags && data.tags.length > 0) {
-                const tagIds = upsertTags(data.tags);
-                const insertPromptTag = db.prepare(
-                    'INSERT INTO prompt_tags (prompt_id, tag_id) VALUES (?, ?)'
-                );
+      if (data.tags && data.tags.length > 0) {
+        const tagIds = upsertTags(data.tags);
+        const insertPromptTag = db.prepare(
+          "INSERT INTO prompt_tags (prompt_id, tag_id) VALUES (?, ?)"
+        );
 
-                for (const tagId of tagIds) {
-                    insertPromptTag.run(id, tagId);
-                }
-            }
+        for (const tagId of tagIds) {
+          insertPromptTag.run(id, tagId);
+        }
+      }
 
-            return getPromptWithTags(id);
-        },
+      return getPromptWithTags(id);
+    },
 
-        deletePrompt(id) {
-            const result = db
-                .prepare('DELETE FROM prompts WHERE id = ?')
-                .run(id);
+    deletePrompt(id) {
+      const result = db.prepare("DELETE FROM prompts WHERE id = ?").run(id);
 
-            return result.changes > 0;
-        },
+      return result.changes > 0;
+    },
 
-        // used by /api/categories
-        listCategories() {
-            return db
-                .prepare(
-                    'SELECT DISTINCT category FROM prompts WHERE category IS NOT NULL ORDER BY category'
-                )
-                .all()
-                .map(r => r.category);
-        },
-    };
+    // used by /api/categories
+    listCategories() {
+      return db
+        .prepare(
+          "SELECT DISTINCT category FROM prompts WHERE category IS NOT NULL ORDER BY category"
+        )
+        .all()
+        .map((r) => r.category);
+    },
+  };
 };

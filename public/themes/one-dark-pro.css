@@ -1,0 +1,97 @@
+@import "./_base.css";
+
+/* ============================================================================
+   PromptVault Theme — One Dark Pro (Dark)
+   ---------------------------------------------------------------------------
+   Balanced neutral dark with calm, readable accents.
+============================================================================ */
+
+html.theme-one-dark-pro {
+  /* Theme mode */
+  --pv-theme-is-dark: 1;
+
+  /* App / page */
+  --pv-bg-app: #282c34;
+  --pv-text-app: #abb2bf;
+
+  /* Header */
+  --pv-bg-header: #282c34;
+  --pv-text-header: #abb2bf;
+
+  /* Surfaces */
+  --pv-bg-surface: #2f343f; /* slightly lifted from app bg */
+  --pv-bg-surface-muted: #2a2f3a; /* trays / filters */
+  --pv-bg-elevated: #3a404d; /* modals */
+
+  --pv-text-surface: #abb2bf;
+  --pv-text-muted: #7f8796;
+
+  /* Borders & dividers */
+  --pv-border: rgba(171, 178, 191, 0.16);
+  --pv-border-strong: rgba(171, 178, 191, 0.28);
+  --pv-divider: rgba(171, 178, 191, 0.12);
+
+  /* Controls */
+  --pv-bg-control: #21252b;
+  --pv-bg-control-hover: rgba(255, 255, 255, 0.08);
+  --pv-bg-control-active: rgba(97, 175, 239, 0.22); /* blue hint */
+
+  --pv-text-control: #abb2bf;
+  --pv-text-control-muted: #7f8796;
+  --pv-text-control-active: #abb2bf;
+
+  /* Primary / intent (One Dark blue) */
+  --pv-bg-primary: #61afef;
+  --pv-bg-primary-hover: #4d9adf;
+  --pv-text-primary-on: #1e222a;
+
+  /* Secondary (purple) */
+  --pv-bg-secondary: #c678dd;
+  --pv-bg-secondary-hover: #b764d1;
+  --pv-text-secondary-on: #1e222a;
+
+  /* Danger (red) */
+  --pv-bg-danger: #e06c75;
+  --pv-bg-danger-hover: #d25c66;
+  --pv-text-danger-on: #1e222a;
+
+  /* Success (green) */
+  --pv-bg-success: #98c379;
+  --pv-text-success-on: #1e222a;
+
+  /* Inputs */
+  --pv-bg-input: #21252b;
+  --pv-text-input: #abb2bf;
+  --pv-placeholder: #5c6370;
+  --pv-border-input: rgba(255, 255, 255, 0.18);
+  --pv-focus-ring: rgba(97, 175, 239, 0.45);
+
+  /* Tags / tertiary UI */
+  --pv-bg-tertiary: #2a2f3a;
+  --pv-text-tertiary-on: #abb2bf;
+  --pv-border-tertiary: rgba(171, 178, 191, 0.2);
+
+  /* Ratings / featured */
+  --pv-star-empty: rgba(171, 178, 191, 0.35);
+  --pv-star-full: #e5c07b; /* One Dark yellow reads “featured” nicely */
+
+  --pv-rating-empty: rgba(171, 178, 191, 0.22);
+  --pv-rating-full: #e5c07b;
+
+  /* Overlay */
+  --pv-overlay: rgba(40, 44, 52, 0.78);
+
+  /* Shadows */
+  --pv-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --pv-shadow-md: 0 6px 14px rgba(0, 0, 0, 0.45);
+  --pv-shadow-lg: 0 14px 28px rgba(0, 0, 0, 0.55);
+  --pv-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.6);
+
+  --pv-shadow-sm-inverted: 0 -1px 2px rgba(0, 0, 0, 0.3);
+  --pv-shadow-md-inverted: 0 -6px 14px rgba(0, 0, 0, 0.35);
+  --pv-shadow-lg-inverted: 0 -14px 28px rgba(0, 0, 0, 0.45);
+  --pv-shadow-xl-inverted: 0 -24px 48px rgba(0, 0, 0, 0.5);
+
+  /* Logo */
+  --pv-logo-filter: brightness(1.05) saturate(1.05);
+}

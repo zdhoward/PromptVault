@@ -1,0 +1,33 @@
+# Node / deps
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Data / runtime state
+data/
+logs/
+
+# Env / secrets
+.env
+.env.local
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+*.temp
+
+# Docs (optional – remove if you want them formatted)
+docs/

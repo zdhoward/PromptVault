@@ -1,18 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!doctype html>
+<html lang="en" class="pv-font-normal">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PromptVault</title>
 
     <!-- Prevent Alpine flash -->
     <style>
-        [x-cloak] { display: none !important; }
+      [x-cloak] {
+        display: none !important;
+      }
 
-        /* Global utility: logo tinting */
-        .pv-logo {
-            filter: var(--pv-logo-filter);
-        }
+      /* Global utility: logo tinting */
+      .pv-logo {
+        filter: var(--pv-logo-filter);
+      }
     </style>
 
     <!-- Tailwind (layout + utilities only) -->
@@ -22,54 +24,118 @@
          THEME SYSTEM
          - default.css defines :root (baseline theme)
          - html.theme-* overrides variables
+         - order is intentional (core → expressive → variants)
          ========================================================= -->
-    <link rel="stylesheet" href="/themes/dark.css">
-    <link rel="stylesheet" href="/themes/light.css">
-    <link rel="stylesheet" href="/themes/blue-lime.css">
-    <link rel="stylesheet" href="/themes/vintage.css">
-    <link rel="stylesheet" href="/themes/angsty-robot.css">
-    <link rel="stylesheet" href="/themes/high-contrast.css">
-    <link rel="stylesheet" href="/themes/nord-slate.css">
-    <link rel="stylesheet" href="/themes/mono-ink.css">
+
+    <!-- Core / baseline -->
+    <link rel="stylesheet" href="/themes/dark.css" />
+    <link rel="stylesheet" href="/themes/light.css" />
+    <link rel="stylesheet" href="/themes/blue-lime.css" />
+
+    <!-- Vintage / analog -->
+    <link rel="stylesheet" href="/themes/vintage.css" />
+
+    <!-- Evangelion -->
+    <link rel="stylesheet" href="/themes/angsty-robot.css" />
+    <link rel="stylesheet" href="/themes/angsty-robot-light.css" />
+
+    <!-- IDE / professional darks -->
+    <link rel="stylesheet" href="/themes/one-dark-pro.css" />
+    <link rel="stylesheet" href="/themes/tokyo-night.css" />
+    <link rel="stylesheet" href="/themes/darcula.css" />
+    <link rel="stylesheet" href="/themes/dracula.css" />
+    <link rel="stylesheet" href="/themes/night-owl.css" />
+    <link rel="stylesheet" href="/themes/material-dark.css" />
+
+    <!-- Retro / neon -->
+    <link rel="stylesheet" href="/themes/synthwave-84.css" />
+    <link rel="stylesheet" href="/themes/synthwave-84-crt.css" />
+    <link rel="stylesheet" href="/themes/nu-disco.css" />
+    <link rel="stylesheet" href="/themes/outrun.css" />
+
+    <!-- Cyberpunk -->
+    <link rel="stylesheet" href="/themes/cyberpunk.css" />
+
+    <!-- Game Boy -->
+    <link rel="stylesheet" href="/themes/gameboy.css" />
+    <link rel="stylesheet" href="/themes/gameboy-dither.css" />
+
+    <!-- Parchment -->
+    <link rel="stylesheet" href="/themes/parchment.css" />
+    <link rel="stylesheet" href="/themes/parchment-grain.css" />
+
+    <!-- Experimental / statement -->
+    <link rel="stylesheet" href="/themes/analog-dystopia.css" />
 
     <!-- Third-party libs (ORDER MATTERS) -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <script src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
+    <script
+      src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"
+      defer
+    ></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
 
     <!-- App JS (extracted, unchanged logic) -->
     <script src="/js/app.js"></script>
-</head>
+  </head>
 
-<body>
-<div
-        id="app"
-        class="min-h-screen flex flex-col bg-[var(--pv-bg-app)] text-[var(--pv-text-app)]"
-        style="background: var(--pv-bg-app); color: var(--pv-text-app);"
-        x-data="promptVault()"
-        x-init="init()"
->
-    <!-- Header -->
-    <div hx-get="/components/header.html" hx-trigger="load" hx-swap="innerHTML"></div>
+  <body>
+    <div
+      id="app"
+      class="min-h-screen flex flex-col bg-[var(--pv-bg-app)] text-[var(--pv-text-app)]"
+      style="background: var(--pv-bg-app); color: var(--pv-text-app)"
+      x-data="promptVault()"
+      x-init="init()"
+    >
+      <!-- Header -->
+      <div
+        hx-get="/components/header.html"
+        hx-trigger="load"
+        hx-swap="innerHTML"
+      ></div>
 
-    <!-- Filters & Search -->
-    <div hx-get="/components/filters.html" hx-trigger="load" hx-swap="innerHTML"></div>
+      <!-- Filters & Search -->
+      <div
+        hx-get="/components/filters.html"
+        hx-trigger="load"
+        hx-swap="innerHTML"
+      ></div>
 
-    <!-- Prompts Grid/List -->
-    <div hx-get="/components/prompts.html" hx-trigger="load" hx-swap="innerHTML"></div>
+      <!-- Prompts Grid/List -->
+      <div
+        hx-get="/components/prompts.html"
+        hx-trigger="load"
+        hx-swap="innerHTML"
+      ></div>
 
-    <!-- Toast Notification -->
-    <div hx-get="/components/toast.html" hx-trigger="load" hx-swap="innerHTML"></div>
+      <!-- Toast Notification -->
+      <div
+        hx-get="/components/toast.html"
+        hx-trigger="load"
+        hx-swap="innerHTML"
+      ></div>
 
-    <!-- Settings Modal -->
-    <div hx-get="/components/settings-modal.html" hx-trigger="load" hx-swap="innerHTML"></div>
+      <!-- Settings Modal -->
+      <div
+        hx-get="/components/settings-modal.html"
+        hx-trigger="load"
+        hx-swap="innerHTML"
+      ></div>
 
-    <!-- Prompt Editor Modal -->
-    <div hx-get="/components/prompt-editor-modal.html" hx-trigger="load" hx-swap="innerHTML"></div>
+      <!-- Prompt Editor Modal -->
+      <div
+        hx-get="/components/prompt-editor-modal.html"
+        hx-trigger="load"
+        hx-swap="innerHTML"
+      ></div>
 
-    <!-- Page Editor Modal -->
-    <div hx-get="/components/page-editor-modal.html" hx-trigger="load" hx-swap="innerHTML"></div>
-</div>
-</body>
+      <!-- Page Editor Modal -->
+      <div
+        hx-get="/components/page-editor-modal.html"
+        hx-trigger="load"
+        hx-swap="innerHTML"
+      ></div>
+    </div>
+  </body>
 </html>

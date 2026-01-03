@@ -1,22 +1,22 @@
 @import "./_base.css";
 
 html.theme-high-contrast {
-    --pv-theme-is-dark: 1;
+  --pv-theme-is-dark: 1;
 
-    --pv-bg-app: #000000;
-    --pv-bg-header: #000000;
-    --pv-bg-surface: #000000;
-    --pv-bg-surface-muted: #000000;
+  --pv-bg-app: #000000;
+  --pv-bg-header: #000000;
+  --pv-bg-surface: #000000;
+  --pv-bg-surface-muted: #000000;
 
-    --pv-border: #ffffff;
+  --pv-border: #ffffff;
 
-    --pv-text-link: #00ffff;
+  --pv-text-link: #00ffff;
 
-    --pv-bg-primary: #00ffff;
-    --pv-text-primary-on: #000000;
+  --pv-bg-primary: #00ffff;
+  --pv-text-primary-on: #000000;
 
-    --pv-shadow-sm: none;
-    --pv-shadow-md: none;
-    --pv-shadow-lg: none;
-    --pv-shadow-xl: none;
+  --pv-shadow-sm: none;
+  --pv-shadow-md: none;
+  --pv-shadow-lg: none;
+  --pv-shadow-xl: none;
 }
