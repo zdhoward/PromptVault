@@ -1,26 +1,121 @@
+@import "./_base.css";
+
+/* ============================================================================
+   PromptVault Theme — Vintage (TR-808 Inspired)
+   ---------------------------------------------------------------------------
+   Warm charcoal surfaces, off-white text, analog red/orange accents.
+============================================================================ */
+
 html.theme-vintage {
-    --pv-bg: #f8f4e8;
-    --pv-header-bg: #ede5cf;
-    --pv-card-bg: #f3ecd8;
-    --pv-bg-tertiary: #e8dec4;
+    /* ------------------------------------------------------------------------
+       Theme mode
+    ------------------------------------------------------------------------ */
+    --pv-theme-is-dark: 1;
 
-    --pv-text: #3b2f2f;
-    --pv-muted-text: #6b5b53;
-    --pv-title: #2a1f1f;
+    /* ------------------------------------------------------------------------
+       App / page background
+    ------------------------------------------------------------------------ */
+    --pv-bg-app:   #181514;   /* warm near-black */
+    --pv-text-app: #f1ede8;   /* warm off-white */
 
-    --pv-border: #c8b892;
+    /* ------------------------------------------------------------------------
+       Header
+    ------------------------------------------------------------------------ */
+    --pv-bg-header:   #181514;
+    --pv-text-header: #f1ede8;
 
-    --pv-primary: #7c2d12;
-    --pv-secondary: #92400e;
-    --pv-accent: #b45309;
+    /* ------------------------------------------------------------------------
+       Surfaces
+    ------------------------------------------------------------------------ */
+    --pv-bg-surface:        #1f1b19; /* cards */
+    --pv-bg-surface-muted: #26211f; /* trays / filters */
+    --pv-bg-elevated:      #2b2522; /* modals */
 
-    --pv-selected: #d6c4a0;
-    --pv-hover: #efe6cf;
+    --pv-text-surface: #f1ede8;
+    --pv-text-muted:   #b8b0aa; /* warm gray */
 
-    --pv-success: #166534;
-    --pv-warning: #a16207;
-    --pv-error: #991b1b;
-    --pv-attention: #c2410c;
+    /* ------------------------------------------------------------------------
+       Borders & dividers
+    ------------------------------------------------------------------------ */
+    --pv-border:        rgba(241,237,232,0.14);
+    --pv-border-strong: rgba(241,237,232,0.28);
+    --pv-divider:       rgba(241,237,232,0.10);
 
-    --pv-overlay: rgba(0,0,0,0.35);
+    /* ------------------------------------------------------------------------
+       Controls (buttons, toggles)
+    ------------------------------------------------------------------------ */
+    --pv-bg-control:        #2a2421;
+    --pv-bg-control-hover:  rgba(255,255,255,0.08);
+    --pv-bg-control-active: rgba(222,102,86,0.28); /* TR-808 red */
+
+    --pv-text-control:        #f1ede8;
+    --pv-text-control-muted: #b8b0aa;
+    --pv-text-control-active:#f1ede8;
+
+    /* ------------------------------------------------------------------------
+       Primary / intent colors
+       (TR-808 red-orange, restrained)
+    ------------------------------------------------------------------------ */
+    --pv-bg-primary:       #de6656; /* classic 808 red */
+    --pv-bg-primary-hover: #c45547;
+    --pv-text-primary-on:  #181514;
+
+    --pv-bg-secondary:        #2a2421;
+    --pv-bg-secondary-hover:  rgba(255,255,255,0.10);
+    --pv-text-secondary-on:   #f1ede8;
+
+    --pv-bg-danger:       #b72124; /* deeper red */
+    --pv-bg-danger-hover: #991c1f;
+    --pv-text-danger-on:  #f1ede8;
+
+    --pv-bg-success:       #6e4b34; /* warm brown success */
+    --pv-text-success-on:  #f1ede8;
+
+    /* ------------------------------------------------------------------------
+       Inputs
+    ------------------------------------------------------------------------ */
+    --pv-bg-input:     #181514;
+    --pv-text-input:   #f1ede8;
+    --pv-placeholder:  #a89c9a;
+    --pv-border-input: rgba(241,237,232,0.22);
+    --pv-focus-ring:   rgba(222,102,86,0.45);
+
+    /* ------------------------------------------------------------------------
+       Tags / tertiary UI
+    ------------------------------------------------------------------------ */
+    --pv-bg-tertiary:      #2a2421;
+    --pv-text-tertiary-on: #f1ede8;
+    --pv-border-tertiary:  rgba(241,237,232,0.22);
+
+    /* ------------------------------------------------------------------------
+       Ratings / featured
+    ------------------------------------------------------------------------ */
+    --pv-star-empty: rgba(241,237,232,0.35);
+    --pv-star-full:  #de6656;
+
+    --pv-rating-empty: rgba(241,237,232,0.22);
+    --pv-rating-full:  #de6656;
+
+    /* ------------------------------------------------------------------------
+       Overlay
+    ------------------------------------------------------------------------ */
+    --pv-overlay: rgba(24,21,20,0.78);
+
+    /* ------------------------------------------------------------------------
+       Shadows (slightly softer, analog feel)
+    ------------------------------------------------------------------------ */
+    --pv-shadow-sm:  0 1px 2px rgba(0,0,0,0.45);
+    --pv-shadow-md:  0 6px 14px rgba(0,0,0,0.50);
+    --pv-shadow-lg:  0 14px 28px rgba(0,0,0,0.60);
+    --pv-shadow-xl:  0 24px 48px rgba(0,0,0,0.65);
+
+    --pv-shadow-sm-inverted:  0 -1px 2px rgba(0,0,0,0.40);
+    --pv-shadow-md-inverted:  0 -6px 14px rgba(0,0,0,0.45);
+    --pv-shadow-lg-inverted:  0 -14px 28px rgba(0,0,0,0.55);
+    --pv-shadow-xl-inverted:  0 -24px 48px rgba(0,0,0,0.60);
+
+    /* ------------------------------------------------------------------------
+       Logo
+    ------------------------------------------------------------------------ */
+    --pv-logo-filter: brightness(1.05) sepia(0.15) saturate(1.05);
 }

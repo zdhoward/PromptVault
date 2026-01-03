@@ -1,26 +1,18 @@
-html.theme-angsty-robot {
-    --pv-bg: #0b0f14;
-    --pv-header-bg: #020617;
-    --pv-card-bg: #020617;
-    --pv-bg-tertiary: #111827;
+@import "./_base.css";
 
-    --pv-text: #e5e7eb;
-    --pv-muted-text: #9ca3af;
-    --pv-title: #f9fafb;
+html.theme-angsty-robot {
+    --pv-theme-is-dark: 1;
+
+    --pv-bg-app: #0b0f14;
+    --pv-bg-header: #020617;
+    --pv-bg-surface: #020617;
+    --pv-bg-surface-muted: #111827;
 
     --pv-border: #1f2937;
 
-    --pv-primary: #22d3ee;
-    --pv-secondary: #64748b;
-    --pv-accent: #38bdf8;
+    --pv-text-secondary: #9ca3af;
+    --pv-text-link: #22d3ee;
 
-    --pv-selected: #0f766e;
-    --pv-hover: #020617;
-
-    --pv-success: #22c55e;
-    --pv-warning: #facc15;
-    --pv-error: #ef4444;
-    --pv-attention: #fb7185;
-
-    --pv-overlay: rgba(0,0,0,0.7);
+    --pv-bg-primary: #22d3ee;
+    --pv-text-primary-on: #020617;
 }

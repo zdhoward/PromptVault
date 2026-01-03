@@ -403,6 +403,7 @@ function promptVault() {
                 const res = await fetch(`/api/prompts?${params}`);
                 const data = await res.json();
                 this.prompts = data.prompts || [];
+                this.refreshTagsFromPrompts();
             } catch (err) {
                 this.showToast('Failed to load prompts');
             }
@@ -416,9 +417,25 @@ function promptVault() {
         },
 
         async loadTags() {
-            const res = await fetch('/api/tags');
-            const data = await res.json();
-            this.allTags = data.tags;
+            // Prefer truth from currently loaded prompts (prevents stale tags)
+            this.refreshTagsFromPrompts();
+
+            // If prompts are empty, fall back to API (optional)
+            if (this.allTags.length > 0) return;
+
+            try {
+                const res = await fetch('/api/tags');
+                const data = await res.json();
+                const tags = data?.tags || [];
+                this.allTags = tags
+                    .map(t => (t && typeof t === 'object') ? t.name : t)
+                    .filter(Boolean)
+                    .map(name => String(name))
+                    .sort((a, b) => a.localeCompare(b))
+                    .map(name => ({ id: name, name }));
+            } catch (_) {
+                this.allTags = [];
+            }
         },
 
         async loadPages() {
@@ -426,6 +443,22 @@ function promptVault() {
             const data = await res.json();
             const pages = data.pages || [];
             this.pages = pages.sort((a, b) => (a.name || '').localeCompare(b.name || '', undefined, { sensitivity: 'base' }));
+        },
+
+        refreshTagsFromPrompts() {
+            const set = new Set();
+
+            for (const p of (this.prompts || [])) {
+                const tags = p?.tags || [];
+                for (const t of tags) {
+                    const name = (t && typeof t === 'object') ? t.name : t;
+                    if (name) set.add(String(name));
+                }
+            }
+
+            this.allTags = Array.from(set)
+                .sort((a, b) => a.localeCompare(b))
+                .map(name => ({ id: name, name }));
         },
 
         applyFilters() {
@@ -573,10 +606,57 @@ function promptVault() {
 
             try {
                 await fetch(`/api/prompts/${id}`, { method: 'DELETE' });
-                await this.loadPrompts();
+
+                // Immediate UI update (no reliance on reload timing)
+                if (Array.isArray(this.prompts)) {
+                    this.prompts = this.prompts.filter(p => p && p.id !== id);
+                }
+
+                // Keep everything consistent (categories/tags may change)
+                await this.loadCategories();
+                await this.loadTags();
+
                 this.showToast('✓ Prompt deleted');
             } catch (err) {
                 this.showToast('Failed to delete prompt');
+            }
+        },
+
+        async toggleFeatured(prompt) {
+            if (!prompt || !prompt.id) return;
+
+            const original = !!prompt.is_featured;
+            prompt.is_featured = !original;
+
+            try {
+                // Normalize tags for API (modal uses string tags)
+                const tags = Array.isArray(prompt.tags)
+                    ? prompt.tags.map(t => (t && typeof t === 'object' ? t.name : t)).filter(Boolean)
+                    : [];
+
+                const payload = {
+                    id: prompt.id,
+                    title: prompt.title ?? '',
+                    content: prompt.content ?? '',
+                    category: prompt.category ?? '',
+                    rating: Number(prompt.rating ?? 0),
+                    tags,
+                    is_featured: !!prompt.is_featured,
+                };
+
+                await fetch(`/api/prompts/${prompt.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                // Re-fetch so pinning/sorting stays authoritative
+                await this.loadPrompts();
+                this.showToast(prompt.is_featured ? '★ Featured' : '☆ Unfeatured');
+            } catch (err) {
+                // Roll back UI on failure
+                prompt.is_featured = original;
+                this.showToast('Failed to update featured');
             }
         },
 

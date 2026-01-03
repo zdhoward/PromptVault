@@ -1,41 +1,394 @@
+/* ============================================================================
+   PromptVault — Base Theme Contract (FINAL)
+   --------------------------------------------------------------------------
+   This file defines ALL semantic UI roles.
+   Components MUST use these variables.
+============================================================================ */
+
+/* ============================================================================
+   1. THEME MODE
+============================================================================ */
+
 :root {
-    /* ===============================
-       Elevation / Shadows (THE KEY)
-       =============================== */
+    --pv-theme-is-dark: 1;
+}
 
-    .pv-shadow-sm {
-        box-shadow: var(--pv-shadow-sm);
+/* ============================================================================
+   2. PAGE / APP
+============================================================================ */
+
+:root {
+    --pv-bg-app:        #020617;
+    --pv-text-app:      #e5e7eb;
+}
+
+/* ============================================================================
+   3. HEADER
+============================================================================ */
+
+:root {
+    --pv-bg-header:     #020617;
+    --pv-text-header:   #e5e7eb;
+}
+
+/* ============================================================================
+   4. SURFACES
+============================================================================ */
+
+:root {
+    --pv-bg-surface:        #0b1220;  /* cards */
+    --pv-bg-surface-muted: #0f1b2d;  /* filters / trays */
+    --pv-bg-elevated:      #0f1e33;  /* modals */
+    --pv-bg-grid: linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.02),
+            rgba(255,255,255,0.00)
+    );
+
+    .prompt-card:hover {
+        transform: translateY(-1px);
     }
 
-    .pv-shadow-md {
-        box-shadow: var(--pv-shadow-md);
-    }
+    --pv-text-surface:     #e5e7eb;
+}
 
-    .pv-shadow-xl {
-        box-shadow: var(--pv-shadow-xl);
-    }
+/* ============================================================================
+   BUTTON CORE (base = normal button)
+============================================================================ */
 
-    .pv-shadow-inset {
-        box-shadow: var(--pv-shadow-inset);
-    }
+.pv-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 
-    .pv-shadow-tray {
-        box-shadow: var(--pv-shadow-tray);
-    }
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: 8px;
+
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+
+    cursor: pointer;
+    transition: background 120ms ease, opacity 120ms ease;
+}
+
+.pv-btn:hover {
+    opacity: 0.92;
+}
 
 
+/* ============================================================================
+   BUTTON SIZE MODIFIERS
+============================================================================ */
 
-    /* ===============================
-       Surface separation helpers
-       =============================== */
+.pv-btn-pill {
+    min-height: 28px;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+}
 
-    --pv-surface-gap: 1px;
-    --pv-surface-border-opacity: 0.08;
+.pv-btn-icon {
+    height: 36px;
+    width: 36px;
+    padding: 0;
+    border-radius: 8px;
+}
 
+/* ============================================================================
+   BUTTON VARIANTS
+============================================================================ */
 
-    /* ===============================
-       Logo handling
-       =============================== */
+.pv-btn-primary {
+    background: var(--pv-bg-primary);
+    color: var(--pv-text-primary-on);
+}
 
+.pv-btn-secondary {
+    background: var(--pv-bg-control);
+    color: var(--pv-text-control);
+    border: 1px solid var(--pv-border);
+}
+
+.pv-btn-muted {
+    background: transparent;
+    color: var(--pv-text-muted);
+    border: 1px solid var(--pv-border);
+}
+
+.pv-btn-danger {
+    background: var(--pv-bg-danger);
+    color: var(--pv-text-danger-on);
+}
+
+/* Primary pill button with normal primary rounding */
+.pv-btn-primary-pill {
+    min-height: 28px;
+    padding: 0 12px;
+    border-radius: 8px; /* primary-style corners, not fully round */
+    font-size: 0.75rem;
+}
+
+/* ============================================================================
+   6. INPUTS (IMPORTANT — was missing before)
+============================================================================ */
+
+:root {
+    --pv-bg-input:          #020617;
+    --pv-text-input:        #e5e7eb;
+    --pv-placeholder:       #9fb3d1;
+
+    --pv-border-input:      rgba(255,255,255,0.18);
+    --pv-focus-ring:        rgba(132,204,22,0.45);
+}
+
+/* ============================================================================
+   7. BORDERS / DIVIDERS
+============================================================================ */
+
+:root {
+    --pv-border:            rgba(255,255,255,0.12);
+}
+
+/* ============================================================================
+   8. BRAND / INTENT
+============================================================================ */
+
+:root {
+    --pv-primary:   #84cc16;
+    --pv-secondary: #38bdf8;
+    --pv-danger:    #f87171;
+    --pv-warning:   #facc15;
+    --pv-success:   #84cc16;
+}
+
+/* ============================================================================
+   9. TEXT ROLES
+============================================================================ */
+
+:root {
+    --pv-title:       #e5e7eb;
+    --pv-text-muted:  #9fb3d1;
+}
+
+/* ============================================================================
+   10. SHADOWS
+============================================================================ */
+
+:root {
+    --pv-shadow-sm:  0 1px 2px rgba(0,0,0,0.35);
+    --pv-shadow-md:  0 6px 12px rgba(0,0,0,0.45);
+    --pv-shadow-lg:  0 14px 28px rgba(0,0,0,0.55);
+    --pv-shadow-xl:  0 24px 48px rgba(0,0,0,0.65);
+
+    --pv-shadow-inset-top:
+            inset 0 1px 0 rgba(255,255,255,0.06),
+            inset 0 -1px 0 rgba(0,0,0,0.45);
+
+    --pv-shadow-xl-inverted:
+            0 -16px 36px rgba(0,0,0,0.55);
+}
+
+/* Utilities */
+.pv-shadow-sm { box-shadow: var(--pv-shadow-sm); }
+.pv-shadow-md { box-shadow: var(--pv-shadow-md); }
+.pv-shadow-lg { box-shadow: var(--pv-shadow-lg); }
+.pv-shadow-xl { box-shadow: var(--pv-shadow-xl); }
+.pv-shadow-xl-inverted { box-shadow: var(--pv-shadow-xl-inverted); }
+
+/* ============================================================================
+   11. ICON ACTIONS
+============================================================================ */
+
+:root {
+    --pv-icon-action:        var(--pv-text-muted);
+    --pv-icon-action-hover:  var(--pv-text-app);
+    --pv-icon-action-danger: var(--pv-danger);
+}
+
+.pv-icon-action {
+    width: 1.75rem;
+    height: 1.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--pv-icon-action);
+}
+
+.pv-icon-action:hover {
+    color: var(--pv-icon-action-hover);
+}
+
+.pv-icon-action-danger:hover {
+    color: var(--pv-icon-action-danger);
+}
+
+/* ============================================================================
+   12. FEATURED / RATING
+============================================================================ */
+
+:root {
+    --pv-star-off:  rgba(255,255,255,0.35);
+    --pv-star-on:   var(--pv-primary);
+
+    --pv-rating-empty: rgba(255,255,255,0.18);
+    --pv-rating-full:  var(--pv-primary);
+}
+
+.pv-feature {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--pv-border);
+    background: var(--pv-bg-control);
+    color: var(--pv-star-off);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.pv-feature[data-on="1"] {
+    color: var(--pv-star-on);
+}
+
+.pv-rating {
+    width: 4.5rem;
+    height: 0.6rem;
+    background: var(--pv-rating-empty);
+    border-radius: 999px;
+    position: relative;
+    overflow: hidden;
+}
+
+.pv-rating::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: calc((var(--pv-rating, 0) / 5) * 100%);
+    background: var(--pv-rating-full);
+}
+
+/* ============================================================================
+   13. MODALS / OVERLAY
+============================================================================ */
+
+.modal {
+    background: var(--pv-bg-elevated);
+    border: 1px solid var(--pv-border);
+    border-radius: 0.75rem;
+}
+
+:root {
+    --pv-overlay: rgba(2,6,23,0.75);
+}
+
+/* ============================================================================
+   14. TAGS
+============================================================================ */
+
+.pv-tag {
+    background: var(--pv-bg-control);
+    border: 1px solid var(--pv-border);
+    color: var(--pv-text-muted);
+}
+
+/* ============================================================================
+   15. LOGO
+============================================================================ */
+
+:root {
     --pv-logo-filter: none;
+}
+
+.pv-logo {
+    width: 28px;
+    height: 28px;
+    display: inline-block;
+
+    background-image: url("/assets/pv_logo.png"); /* or whatever you use */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    filter: var(--pv-logo-filter);
+}
+
+/* ============================================================================
+   VIEW TOGGLE (Grid / List)
+============================================================================ */
+
+.pv-view-toggle {
+    height: 38px;
+    padding: 4px;
+    border-radius: 10px;
+    background: var(--pv-bg-control);
+    border: 1px solid var(--pv-border);
+}
+
+.pv-view-btn {
+    width: 64px;
+    height: 30px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--pv-text-control-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    cursor: pointer;
+}
+
+.pv-view-indicator {
+    width: 64px;
+    height: 30px;
+    border-radius: 6px;
+    background: var(--pv-bg-surface);
+    box-shadow: var(--pv-shadow-sm);
+}
+
+/* ============================================================================
+   INPUTS / SELECTS (BASE COMPONENT)
+============================================================================ */
+
+.pv-input,
+.pv-select,
+.pv-textarea {
+    width: 100%;
+    min-height: 38px;
+
+    padding: 0 14px;
+    border-radius: 8px;
+
+    background: var(--pv-bg-input);
+    color: var(--pv-text-input);
+
+    border: 1px solid var(--pv-border-input);
+
+    font-size: 0.875rem;
+    line-height: 1.25;
+
+    outline: none;
+}
+
+.pv-textarea {
+    padding: 10px 14px;
+    min-height: 96px;
+    resize: vertical;
+}
+
+.pv-input::placeholder,
+.pv-textarea::placeholder {
+    color: var(--pv-placeholder);
+}
+
+.pv-input:focus,
+.pv-select:focus,
+.pv-textarea:focus {
+    box-shadow: 0 0 0 2px var(--pv-focus-ring);
+    border-color: transparent;
 }

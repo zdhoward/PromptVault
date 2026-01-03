@@ -1,0 +1,41 @@
+<div
+        class="relative flex items-center p-1 rounded-lg"
+        style="
+        background: var(--pv-bg-control);
+        border: 1px solid var(--pv-border);
+    "
+>
+    <!-- Sliding indicator -->
+    <div
+            class="absolute top-1 bottom-1 left-1 rounded-md transition-transform duration-200"
+            :class="viewMode === 'list' ? 'translate-x-full' : 'translate-x-0'"
+            style="
+            width: calc(50% - 4px);
+            background: var(--pv-bg-control-active);
+        "
+    ></div>
+
+    <!-- Grid -->
+    <button
+            type="button"
+            class="relative z-10 px-4 py-1.5 text-sm font-medium rounded-md transition"
+            :class="viewMode === 'grid'
+            ? 'text-[var(--pv-text-control)]'
+            : 'text-[var(--pv-text-control-muted)]'"
+            @click="viewMode = 'grid'"
+    >
+        Grid
+    </button>
+
+    <!-- List -->
+    <button
+            type="button"
+            class="relative z-10 px-4 py-1.5 text-sm font-medium rounded-md transition"
+            :class="viewMode === 'list'
+            ? 'text-[var(--pv-text-control)]'
+            : 'text-[var(--pv-text-control-muted)]'"
+            @click="viewMode = 'list'"
+    >
+        List
+    </button>
+</div>

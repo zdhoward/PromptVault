@@ -1,0 +1,60 @@
+<div class="mt-4 flex items-center gap-2">
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 flex-1 min-w-0">
+        <button
+                type="button"
+                @click="goAllPrompts()"
+                :class="activePage === null ? 'opacity-100' : 'opacity-70 hover:opacity-100'"
+                class="pv-btn pv-btn-pill pv-btn-secondary whitespace-nowrap"
+        >
+            All Prompts
+        </button>
+
+        <template x-for="page in pages" :key="page.id">
+            <button
+                    type="button"
+                    @click="loadPage(page)"
+                    :class="activePage?.id === page.id ? 'opacity-100' : 'opacity-70 hover:opacity-100'"
+                    class="pv-btn pv-btn-pill pv-btn-secondary whitespace-nowrap inline-flex items-center gap-2"
+            >
+                <span x-text="page.name"></span>
+
+                <span
+                        @click.stop="deletePage(page)"
+                        class="inline-flex items-center justify-center w-4 h-4 rounded hover:opacity-80 transition"
+                        title="Delete page"
+                        aria-label="Delete page"
+                >×</span>
+            </button>
+        </template>
+
+        <button
+                type="button"
+                @click="openPageEditor()"
+                class="pv-btn pv-btn-primary pv-btn-primary-pill whitespace-nowrap"
+        >
+            + Page
+        </button>
+    </div>
+
+    <!-- Right-side actions -->
+    <div class="flex items-center gap-4">
+
+        <!-- View toggle (Grid / List) -->
+        <div
+                class="relative"
+                hx-get="/components/view-toggle.html"
+                hx-trigger="load"
+                hx-swap="innerHTML"
+        ></div>
+
+        <!-- New Prompt -->
+        <button
+                type="button"
+                class="pv-btn pv-btn-normal pv-btn-primary"
+                @click="openEditor()"
+        >
+            + New Prompt
+        </button>
+    </div>
+</div>
+

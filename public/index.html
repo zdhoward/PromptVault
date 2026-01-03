@@ -45,7 +45,8 @@
 <body>
 <div
         id="app"
-        class="min-h-screen transition-colors bg-[var(--pv-bg)] text-[var(--pv-text)]"
+        class="min-h-screen flex flex-col bg-[var(--pv-bg-app)] text-[var(--pv-text-app)]"
+        style="background: var(--pv-bg-app); color: var(--pv-text-app);"
         x-data="promptVault()"
         x-init="init()"
 >
@@ -57,7 +58,6 @@
 
     <!-- Prompts Grid/List -->
     <div hx-get="/components/prompts.html" hx-trigger="load" hx-swap="innerHTML"></div>
-
 
     <!-- Toast Notification -->
     <div hx-get="/components/toast.html" hx-trigger="load" hx-swap="innerHTML"></div>

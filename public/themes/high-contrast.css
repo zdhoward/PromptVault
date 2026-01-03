@@ -1,26 +1,22 @@
-html.theme-high-contrast {
-    --pv-bg: #000000;
-    --pv-header-bg: #000000;
-    --pv-card-bg: #0a0a0a;
-    --pv-bg-tertiary: #111111;
+@import "./_base.css";
 
-    --pv-text: #ffffff;
-    --pv-muted-text: #cbd5f5;
-    --pv-title: #ffffff;
+html.theme-high-contrast {
+    --pv-theme-is-dark: 1;
+
+    --pv-bg-app: #000000;
+    --pv-bg-header: #000000;
+    --pv-bg-surface: #000000;
+    --pv-bg-surface-muted: #000000;
 
     --pv-border: #ffffff;
 
-    --pv-primary: #00ffff;
-    --pv-secondary: #ff00ff;
-    --pv-accent: #ffff00;
+    --pv-text-link: #00ffff;
 
-    --pv-selected: #1e40af;
-    --pv-hover: #111111;
+    --pv-bg-primary: #00ffff;
+    --pv-text-primary-on: #000000;
 
-    --pv-success: #00ff00;
-    --pv-warning: #ffff00;
-    --pv-error: #ff0000;
-    --pv-attention: #ff8800;
-
-    --pv-overlay: rgba(0,0,0,0.85);
+    --pv-shadow-sm: none;
+    --pv-shadow-md: none;
+    --pv-shadow-lg: none;
+    --pv-shadow-xl: none;
 }
