@@ -506,7 +506,6 @@ function promptVault() {
       }
     },
 
-
     async loadCategories() {
       const res = await fetch("/api/categories");
       const data = await res.json();
@@ -514,9 +513,7 @@ function promptVault() {
     },
 
     get activeTags() {
-      return this.allTags.filter((t) =>
-          this.filters.tags.includes(t.name)
-      );
+      return this.allTags.filter((t) => this.filters.tags.includes(t.name));
     },
 
     async loadPages() {
@@ -541,8 +538,8 @@ function promptVault() {
       }
 
       this.allTags = Array.from(set)
-          .sort((a, b) => a.localeCompare(b))
-          .map((name) => ({ id: name, name }));
+        .sort((a, b) => a.localeCompare(b))
+        .map((name) => ({ id: name, name }));
     },
 
     applyFilters() {
