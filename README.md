@@ -1,4 +1,4 @@
-# PromptVault
+# PromptVault v0.5
 
 <img width="1213" height="713" alt="image" src="https://github.com/user-attachments/assets/f9012ad2-f50d-44d9-bade-e807a5741fd6" />
 
