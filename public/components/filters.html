@@ -1,6 +1,6 @@
 <div
-  class="filters sticky top-[64px] z-20 pv-shadow-xl-inverted"
-  style="
+        class="filters sticky top-[64px] z-20 pv-shadow-xl-inverted"
+        style="
     background: var(--pv-bg-surface-muted);
     border-bottom: 1px solid var(--pv-border);
   "
@@ -12,18 +12,18 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
       <!-- Search -->
       <input
-        type="text"
-        x-model="filters.search"
-        @input.debounce.300ms="onSearchChanged()"
-        placeholder="Search prompts..."
-        class="pv-input w-full"
+              type="text"
+              x-model="filters.search"
+              @input.debounce.300ms="onSearchChanged()"
+              placeholder="Search prompts..."
+              class="pv-input w-full"
       />
 
       <!-- Category -->
       <select
-        x-model="filters.category"
-        @change="onCategoryChanged()"
-        class="pv-input pv-select w-full"
+              x-model="filters.category"
+              @change="onCategoryChanged()"
+              class="pv-input pv-select w-full"
       >
         <option value="">All Categories</option>
         <template x-for="cat in categories" :key="cat">
@@ -33,9 +33,9 @@
 
       <!-- Sort -->
       <select
-        x-model="filters.sort"
-        @change="applyFilters()"
-        class="pv-input pv-select w-full"
+              x-model="filters.sort"
+              @change="applyFilters()"
+              class="pv-input pv-select w-full"
       >
         <option value="newest">Newest First</option>
         <option value="oldest">Oldest First</option>
@@ -53,22 +53,41 @@
           Filter query
         </label>
         <input
-          type="text"
-          x-model="filterQuery"
-          @keydown.enter.prevent="applyFilterQuery()"
-          placeholder="cat:Trading tag:nt8 featured"
-          class="pv-input w-full font-mono text-sm"
+                type="text"
+                x-model="filterQuery"
+                @keydown.enter.prevent="applyFilterQuery()"
+                placeholder="cat:Trading tag:nt8 featured"
+                class="pv-input w-full font-mono text-sm"
         />
       </div>
 
       <!-- Show JSON toggle -->
       <button
-        type="button"
-        class="pv-btn pv-btn-muted pv-btn-normal"
-        @click="advancedOpen = !advancedOpen"
+              type="button"
+              class="pv-btn pv-btn-muted pv-btn-normal"
+              @click="advancedOpen = !advancedOpen"
       >
         Show JSON
       </button>
+    </div>
+
+    <!-- =====================================================
+             TAGS (AVAILABLE TAGS)
+             This is what you want under "Filter query"
+        ====================================================== -->
+    <div
+            x-show="allTags && allTags.length"
+            class="flex flex-wrap gap-2 pt-1"
+    >
+      <template x-for="t in allTags" :key="t.id ?? t.name ?? t">
+<span
+        class="pv-tag px-2 py-0.5 rounded text-xs font-medium cursor-pointer"
+        :class="filters.tags.includes(t.name ?? t)
+    ? 'pv-tag-active'
+    : 'pv-tag-inactive'"
+        @click="toggleTag(t.name ?? t)"
+        x-text="t.name ?? t"
+></span>      </template>
     </div>
 
     <!-- =====================================================
@@ -76,41 +95,28 @@
         ====================================================== -->
     <div x-show="advancedOpen" x-cloak class="space-y-3">
       <textarea
-        rows="6"
-        x-model="filterJson"
-        class="pv-input w-full font-mono text-xs"
+              rows="6"
+              x-model="filterJson"
+              class="pv-input w-full font-mono text-xs"
       ></textarea>
 
       <div class="flex gap-2">
         <button
-          type="button"
-          class="pv-btn pv-btn-primary pv-btn-pill"
-          @click="applyFilterJson()"
+                type="button"
+                class="pv-btn pv-btn-primary pv-btn-pill"
+                @click="applyFilterJson()"
         >
           Apply JSON
         </button>
 
         <button
-          type="button"
-          class="pv-btn pv-btn-muted pv-btn-pill"
-          @click="syncFilterJsonFromFilters()"
+                type="button"
+                class="pv-btn pv-btn-muted pv-btn-pill"
+                @click="syncFilterJsonFromFilters()"
         >
           Reset
         </button>
       </div>
-    </div>
-
-    <!-- =====================================================
-             ACTIVE TAGS
-        ====================================================== -->
-    <div x-show="filters.tags.length" class="flex flex-wrap gap-2 pt-1">
-      <template x-for="tag in filters.tags" :key="tag">
-        <span
-          class="pv-tag cursor-pointer"
-          @click="toggleTag(tag)"
-          x-text="tag"
-        ></span>
-      </template>
     </div>
   </div>
 </div>

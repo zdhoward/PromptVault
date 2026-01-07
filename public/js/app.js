@@ -51,6 +51,7 @@
 function promptVault() {
   return {
     prompts: [],
+    basePrompts: [],
     categories: [],
     allTags: [],
     pages: [],
@@ -114,8 +115,8 @@ function promptVault() {
 
     async init() {
       await this.loadPrompts();
+      await this.loadBasePrompts();
       await this.loadCategories();
-      await this.loadTags();
       await this.loadPages();
       this.syncFilterQueryFromFilters();
       this.syncFilterJsonFromFilters();
@@ -295,6 +296,39 @@ function promptVault() {
       return patch;
     },
 
+    buildBaseFilterParams() {
+      const params = new URLSearchParams();
+      const rx = this.normalizeRegexFilters(this.filters.regex);
+
+      if (!(rx && (rx.title || rx.content)) && this.filters.search) {
+        params.append("search", this.filters.search);
+      }
+
+      if (!(rx && rx.category) && this.filters.category) {
+        params.append("category", this.filters.category);
+      }
+
+      // ❌ DO NOT include tags here
+
+      params.append("sort", this.filters.sort);
+
+      if (this.filters.featured) params.append("featured", "true");
+      if (this.filters.minRating != null)
+        params.append("minRating", String(this.filters.minRating));
+      if (this.filters.maxRating != null)
+        params.append("maxRating", String(this.filters.maxRating));
+
+      if (rx) {
+        const rxNoTags = { ...rx };
+        delete rxNoTags.tags;
+        if (Object.keys(rxNoTags).length) {
+          params.append("regex", JSON.stringify(rxNoTags));
+        }
+      }
+
+      return params;
+    },
+
     buildFilterQueryText() {
       const escapeRegexLiteral = (s) =>
         (s || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -452,12 +486,26 @@ function promptVault() {
         const res = await fetch(`/api/prompts?${params}`);
         const data = await res.json();
         this.prompts = data.prompts || [];
-        this.refreshTagsFromPrompts();
       } catch (err) {
         this.showToast("Failed to load prompts");
       }
       this.loading = false;
     },
+
+    async loadBasePrompts() {
+      try {
+        const params = this.buildBaseFilterParams();
+        const res = await fetch(`/api/prompts?${params}`);
+        const data = await res.json();
+
+        this.basePrompts = data.prompts || [];
+        this.refreshTagsFromBasePrompts();
+      } catch {
+        this.basePrompts = [];
+        this.allTags = [];
+      }
+    },
+
 
     async loadCategories() {
       const res = await fetch("/api/categories");
@@ -465,30 +513,10 @@ function promptVault() {
       this.categories = data.categories;
     },
 
-    async loadTags() {
-      // Prefer truth from currently loaded prompts (prevents stale tags)
-      this.refreshTagsFromPrompts();
-
-      // If prompts are empty, fall back to API (optional)
-      if (this.allTags.length > 0) return;
-
-      try {
-        const res = await fetch("/api/tags");
-        const data = await res.json();
-        const tags = data?.tags || [];
-        this.allTags = tags
-          .map((t) => (t && typeof t === "object" ? t.name : t))
-          .filter(Boolean)
-          .map((name) => String(name))
-          .sort((a, b) => a.localeCompare(b))
-          .map((name) => ({ id: name, name }));
-      } catch (_) {
-        this.allTags = [];
-      }
-    },
-
     get activeTags() {
-      return this.allTags.filter((tag) => this.filters.tags?.includes(tag));
+      return this.allTags.filter((t) =>
+          this.filters.tags.includes(t.name)
+      );
     },
 
     async loadPages() {
@@ -502,20 +530,19 @@ function promptVault() {
       );
     },
 
-    refreshTagsFromPrompts() {
+    refreshTagsFromBasePrompts() {
       const set = new Set();
 
-      for (const p of this.prompts || []) {
-        const tags = p?.tags || [];
-        for (const t of tags) {
+      for (const p of this.basePrompts || []) {
+        for (const t of p.tags || []) {
           const name = t && typeof t === "object" ? t.name : t;
           if (name) set.add(String(name));
         }
       }
 
       this.allTags = Array.from(set)
-        .sort((a, b) => a.localeCompare(b))
-        .map((name) => ({ id: name, name }));
+          .sort((a, b) => a.localeCompare(b))
+          .map((name) => ({ id: name, name }));
     },
 
     applyFilters() {
@@ -657,8 +684,8 @@ function promptVault() {
 
         this.closeEditor();
         await this.loadPrompts();
+        await this.loadBasePrompts();
         await this.loadCategories();
-        await this.loadTags();
         this.showToast("✓ Prompt saved");
       } catch (err) {
         this.showToast("Failed to save prompt");
@@ -676,9 +703,9 @@ function promptVault() {
           this.prompts = this.prompts.filter((p) => p && p.id !== id);
         }
 
-        // Keep everything consistent (categories/tags may change)
+        // 🔑 Refresh base data sources
+        await this.loadBasePrompts();
         await this.loadCategories();
-        await this.loadTags();
 
         this.showToast("✓ Prompt deleted");
       } catch (err) {
@@ -718,6 +745,7 @@ function promptVault() {
 
         // Re-fetch so pinning/sorting stays authoritative
         await this.loadPrompts();
+        await this.loadBasePrompts();
         this.showToast(prompt.is_featured ? "★ Featured" : "☆ Unfeatured");
       } catch (err) {
         // Roll back UI on failure

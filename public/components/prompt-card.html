@@ -50,10 +50,10 @@
     <div class="flex items-center justify-between pt-2 gap-3">
       <div class="flex flex-wrap gap-1.5 min-w-0">
         <template x-for="tag in (prompt.tags || [])" :key="tag.id ?? tag">
-          <span
-            class="pv-tag px-2 py-0.5 rounded text-xs"
-            x-text="tag.name ?? tag"
-          ></span>
+<span
+        class="pv-tag px-2 py-0.5 rounded text-xs font-medium"
+        x-text="tag.name ?? tag"
+></span>
         </template>
       </div>
 

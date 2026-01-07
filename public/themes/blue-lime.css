@@ -61,9 +61,9 @@ html.theme-blue-lime {
   --pv-bg-primary-hover: #65a30d; /* lime-600 */
   --pv-text-primary-on: #0b1220;
 
-  --pv-bg-secondary: #132238;
+  --pv-bg-secondary: #e0c36b;
   --pv-bg-secondary-hover: rgba(255, 255, 255, 0.1);
-  --pv-text-secondary-on: #e6f0ff;
+  --pv-text-secondary-on: #0b1220;
 
   --pv-bg-danger: #f87171;
   --pv-bg-danger-hover: #ef4444;
